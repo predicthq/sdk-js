@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "lint": " node node_modules/eslint/bin/eslint.js  ./src/",
-    "test": "NODE_ENV=test mocha --recursive",
+    "test": "NODE_ENV=test mocha --require babel-core/register --recursive",
     "updates": "node node_modules/npm-check-updates/bin/npm-check-updates --upgradeAll"
   },
   "repository": {
@@ -13,20 +13,26 @@
     "url": "git+https://github.com/predicthq/sdk-js.git"
   },
   "author": "PredictHQ",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/predicthq/sdk-js/issues"
   },
   "homepage": "https://github.com/predicthq/sdk-js#readme",
   "dependencies": {
+    "dotenv": "^2.0.0",
     "es6-promise": "3.1.2",
     "isomorphic-fetch": "2.2.1",
-    "lodash": "4.5.1",
+    "lodash": "^4.5.1",
+    "loglevel": "^1.4.0",
     "youarei": "1.0.2"
   },
   "devDependencies": {
+    "babel-core": "^6.5.2",
+    "babel-preset-es2015": "^6.5.0",
     "eslint": "2.2.0",
     "expect": "1.14.0",
+    "mocha": "^2.4.5",
+    "nock": "^7.2.2",
     "npm-check-updates": "2.5.8"
   }
 }
