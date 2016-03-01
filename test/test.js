@@ -5,7 +5,10 @@
 
  */
 
-import {_, logger} from "../src/utils"; _.extend(global, require('./shared'))
+import _ from "lodash"
+_.extend(global, require('./shared'))
+
+import {logger} from "../src/utils"
 
 import Client from '../index'
 

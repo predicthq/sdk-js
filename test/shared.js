@@ -2,7 +2,7 @@
  Shared Exports and Misc Helpers
 
  Usage:
- import {_} from "../src/utils"; _.extend(global, require('./shared'))
+ import _ from "lodash"; _.extend(global, require('./shared'))
 
  */
 
