@@ -25,7 +25,7 @@ class Client {
 
         let uri = new YouAreI(`${this.baseUrl}${path}`)
 
-        // uri.query_push({})
+        // remove me once lodash in use somewhere!!
         let test = _.padStart('test', 5)
 
         log.info('client.request', method, uri.to_string())

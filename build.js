@@ -20,22 +20,43 @@ b.transform('babelify')
 
 console.info(chalk.green('\tBuild process started..\n'))
 
+// Don't show individual counts for these modules (too many dependencies)
+var modules = {
+        'core-js': []
+}
+
+var getSize = function(size){
+
+        var color = 'gray'
+        if (size > 5000) color = 'yellow'
+        if (size > 15000) color = 'red'
+
+        return chalk[color](_.padStart(filesize(size, {round: 0}), 5))
+
+}
+
 b.pipeline.on('file',function(file,id,parent){
 
         var stats = fs.statSync(file)
 
-        var size = _.padStart(filesize(stats['size'], {round: 0}), 5)
+        var m = _.filter(_.keys(modules),function(k){ return file.indexOf(k) >= 0 })
 
-        var color = 'gray'
-        if (stats['size'] > 5000) color = 'yellow'
-        if (stats['size'] > 15000) color = 'red'
+        if (m.length > 0){
+                modules[m[0]].push(stats['size'])
+                return
+        }
 
-        console.info('\t' + chalk[color](size) + '\t' + file)
+        console.info('\t' + getSize(stats['size']) + '\t' + file)
 
 })
 
 b.bundle().pipe(fs.createWriteStream(target))
     .on('close',function(){
+
+        _.each(modules,function(v,k){
+                if (v.length > 0)
+                        console.info('\t' + getSize(_.sum(v)) + '\t' + _.upperCase(k) + ' (' + v.length + ' files)')
+        })
 
         var stats = fs.statSync(target)
 

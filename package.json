@@ -10,7 +10,7 @@
     "update": "node node_modules/npm-check-updates/bin/npm-check-updates --upgradeAll",
     "build": "NODE_ENV=production node node_modules/browserify/bin/cmd.js index.js -t babelify | node_modules/uglify-js/bin/uglifyjs -o dist/predicthq.js; node build.js",
     "list_lodash_methods": "node_modules/lodash-modularize/bin/lodash-modularize src/**.js --list -g _",
-    "compile_custom_lodash": "lodash_methods=$(npm run --silent list_lodash_methods | sed -e \"s/\\x1b\\[.\\{1,5\\}m//g\"); node_modules/lodash-cli/bin/lodash -o dist/lodash.custom.js include=$lodash_methods"
+    "lodash": "lodash_methods=$(npm run --silent list_lodash_methods | sed -e \"s/\\x1b\\[.\\{1,5\\}m//g\"); node_modules/lodash-cli/bin/lodash -o dist/lodash.custom.js include=$lodash_methods"
   },
   "repository": {
     "type": "git",
@@ -40,7 +40,8 @@
     "isomorphic-fetch": "2.2.1",
     "lodash": "4.5.1",
     "loglevel": "1.4.0",
-    "youarei": "1.0.2"
+    "youarei": "1.0.2",
+    "babel-polyfill": "^6.6.1"
   },
   "devDependencies": {
     "babel-core": "6.6.0",
@@ -58,7 +59,6 @@
     "module-deps": "4.0.5",
     "nock": "7.2.2",
     "npm-check-updates": "2.5.8",
-    "uglify-js": "2.6.2",
-    "uglifyify": "3.0.1"
+    "uglify-js": "2.6.2"
   }
 }
