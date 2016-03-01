@@ -1,5 +1,7 @@
 /*
         Build Script
+
+        todo: https://github.com/substack/brfs
 */
 
 var UglifyJS = require("uglify-js")

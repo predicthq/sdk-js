@@ -14,7 +14,7 @@ class Events {
 
         options = options || {}
 
-        return this.client.get('/v1/events', EventResultSet, options)
+        return this.client.get('/v1/events/', EventResultSet, options)
     }
 
 }

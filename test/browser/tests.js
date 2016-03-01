@@ -3,15 +3,23 @@
 
 */
 
+
+
 describe('Events', function() {
     it('Search', function(done) {
 
-        //let c = new Client({ access_token : access_token})
+        var access_token = 'pEDSqxTbO9236xGa2WkrCMbZHjGRxH'
+        var c = new PredictHQ.Client({ access_token : access_token})
 
-        // PredictHQ
+        c.events.search()
+            .then(function(results){
+                expect(results.toArray().length).toEqual(10)
+                done()
+            })
+            .catch(done)
 
-        console.info('OK')
-        done()
+
+
 
     })
 

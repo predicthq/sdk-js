@@ -2,10 +2,12 @@ import {_, logger} from "./utils"
 
 import Events from "./endpoints/v1/events"
 
-require('es6-promise').polyfill();
-require('isomorphic-fetch');
+import {polyfill} from 'es6-promise'
+polyfill()
 
-var YouAreI = require('youarei')
+import 'isomorphic-fetch'
+
+import YouAreI from 'youarei'
 
 let log = logger.getLogger("predicthq.client")
 
@@ -28,7 +30,7 @@ class Client {
         // remove me once lodash in use somewhere!!
         let test = _.padStart('test', 5)
 
-        log.info('client.request', method, uri.to_string())
+        log.info(method, uri.to_string())
 
         return new Promise((resolve, reject) => {
 
@@ -50,6 +52,7 @@ class Client {
 
                 })
                 .catch(function(err) {
+                    log.warn(err)
                     return reject(err)
                 });
         })
