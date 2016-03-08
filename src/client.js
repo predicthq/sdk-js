@@ -14,7 +14,7 @@ let log = logger.getLogger("predicthq.client")
 class Client {
 
     constructor(options){
-        this.baseUrl = 'http://api.local.phq.io'
+        this.baseUrl = 'https://api.predicthq.com'
         this.options = options
 
         this.events = new Events(this)
@@ -27,10 +27,10 @@ class Client {
 
         let uri = new YouAreI(`${this.baseUrl}${path}`)
 
+        uri.query_push(options)
+
         // remove me once lodash in use somewhere!!
         let test = _.padStart('test', 5)
-
-        log.info(method, uri.to_string())
 
         return new Promise((resolve, reject) => {
 

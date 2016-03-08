@@ -14,28 +14,47 @@ or
     
 ## Usage
 
-    import Client from 'predicthq'; 
+    var Client = require('predicthq')
      
-    phq = Client(access_token="$ACCESS_TOKEN")
+    var phq = new Client(access_token="ACCESS_TOKEN")
+    
+    phq.events.search({q: 'Madonna', rank_level: 5, country:'AU', 'start.gte' : '2016-01-01'})
+        .then(function(results){
+            var events = results.toArray()
+            for(var i=0; i < events.length; i++)
+                console.info(events[i].rank, events[i].category, events[i].title, events[i].start, events[i].city )
+        })
 
-    for event in phq.events.search(q="Foo Fighters", rank_level=[4, 5], country='US'):
-        print("{} - {} - {} - {}".format(event.rank, event.category, event.title, event.start.strftime('%Y-%m-%d')))
-
-    81 - concerts - Foo Fighters - 2015-11-17
-    99 - concerts - Foo Fighters - 2015-11-16
+    88 "concerts" "Madonna" "2016-03-27T10:00:00Z" "Brisbane"
+    88 "concerts" "Madonna" "2016-03-26T10:00:00Z" "Brisbane"
+    88 "concerts" "Madonna" "2016-03-16T17:30:00Z" "Brisbane"
+    88 "concerts" "Madonna" "2016-03-16T10:00:00Z" "Brisbane"
+    89 "concerts" "Madonna" "2016-03-12T09:00:00Z" "Melbourne"
+    
+# ES6 Usage
+    
+    import Client from 'predicthq'
+    
+    let phq = new Client(access_token="ACCESS_TOKEN")
+    
+    phq.events.search()
+        .then((results)=>{
+            for (let event of results)
+                console.info(event.title)
+        })
+    
 
 ## Endpoints
 
-* Client.oauth2
-* Client.accounts
 * Client.events
-* Client.signals
+
 
 For a description of all available endpoints, refer to our `API Documentation <https://developer.predicthq.com/>`_.
 
 ## Running Tests
 
-    npm run tests
+    npm run test
+    npm run test_browser 
 
 ## Changelog
 
