@@ -8,7 +8,7 @@
 describe('Events', function() {
     it('Search', function(done) {
 
-        var access_token = 'pEDSqxTbO9236xGa2WkrCMbZHjGRxH'
+        var access_token = null
         var c = new PredictHQ.Client({ access_token : access_token})
 
         c.events.search()
