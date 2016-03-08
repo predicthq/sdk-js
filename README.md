@@ -31,7 +31,7 @@ or
     88 "concerts" "Madonna" "2016-03-16T10:00:00Z" "Brisbane"
     89 "concerts" "Madonna" "2016-03-12T09:00:00Z" "Melbourne"
     
-# ES6 Usage
+## ES6 Usage
     
     import Client from 'predicthq'
     
@@ -49,7 +49,7 @@ or
 * Client.events
 
 
-For a description of all available endpoints, refer to our `API Documentation <https://developer.predicthq.com/>`_.
+For a description of all available endpoints, refer to our [API Documentation](https://developer.predicthq.com/).
 
 ## Running Tests
 
