@@ -12,7 +12,7 @@
     "list_lodash_methods": "node_modules/lodash-modularize/bin/lodash-modularize src/**.js --list -g _",
     "lodash": "lodash_methods=$(npm run --silent list_lodash_methods | sed -e \"s/\\x1b\\[.\\{1,5\\}m//g\"); node_modules/lodash-cli/bin/lodash -o dist/lodash.custom.js include=$lodash_methods",
     "coverage": "node_modules/.bin/babel-node node_modules/babel-istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "version": "node_modules/mversion/bin/version"
+    "patch": "node_modules/mversion/bin/version patch -m"
   },
   "repository": {
     "type": "git",

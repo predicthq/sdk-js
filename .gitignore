@@ -36,5 +36,7 @@ node_modules
 .idea
 
 .env
-dist
+
+#dist   # Ugh, bower!
+
 
