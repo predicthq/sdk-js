@@ -6,14 +6,17 @@
     "PredictHQ"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/predicthq/sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:predicthq/sdk-js.git"
+  },
+  "homepage": "https://developer.predicthq.com/",
   "moduleType": [],
   "ignore": [
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "test"
   ],
-  "version": "0.0.1"
+  "version": "0.0.2"
 }
