@@ -16,7 +16,7 @@ import nock from 'nock'
 // require('dotenv').config();
 
 import dotenv from 'dotenv'
-dotenv.config()
+dotenv.config({silent: true})
 
 import logger from 'loglevel'
 
