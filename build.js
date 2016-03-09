@@ -1,9 +1,9 @@
 /*
         Build Script
 
-        todo: https://github.com/substack/brfs
 */
 
+var envify = require('envify/custom')
 var UglifyJS = require("uglify-js")
 var chalk = require('chalk')
 var filesize = require("filesize")
@@ -19,6 +19,12 @@ var b = browserify({standalone: 'PredictHQ', debug:false, expose: 'deps'})
 b.add('./index.js')
 
 b.transform('babelify')
+
+b.transform('brfs')
+
+b.transform(envify({
+        ENDPOINT_URL: 'https://api.predicthq.com'
+}))
 
 console.info(chalk.green('\tBuild process started..\n'))
 

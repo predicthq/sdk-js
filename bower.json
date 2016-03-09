@@ -2,7 +2,8 @@
   "name": "predicthq",
   "description": "PredictHQ Event Intelligence",
   "main": [
-    "dist/predicthq.js"
+    "dist/predicthq.js",
+    "dist/predicthq.min.js"
   ],
   "authors": [
     "PredictHQ"

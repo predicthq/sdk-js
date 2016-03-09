@@ -44,6 +44,7 @@ describe('Events', () => {
             done()
 
         }).catch(done)
+
     })
 
 })

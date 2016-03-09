@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Event Search Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "q": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "label": {
+      "type": "array"
+    },
+    "within": {
+      "type": "string"
+    },
+    "country": {
+      "type": "array"
+    },
+    "start.tz": {
+      "type": "string"
+    },
+    "start.gt": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "start.gte": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "start.lt": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "start.lte": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "end.tz": {
+      "type": "string"
+    },
+    "end.gt": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "end.gte": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "end.lt": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "end.lte": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 200
+    },
+    "offset": {
+      "type": "integer",
+      "minimum": 10
+    },
+    "rank_level": {
+      "items": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "type": "array"
+    },
+    "sort": {
+      "items": {
+        "enum": [
+          "id",
+          "title",
+          "start",
+          "end",
+          "rank",
+          "category",
+          "duration",
+          "country",
+          "labels",
+          "-id",
+          "-title",
+          "-start",
+          "-end",
+          "-rank",
+          "-category",
+          "-duration",
+          "-country",
+          "-labels"
+        ]
+      },
+      "type": "array"
+    },
+    "category": {
+      "items": {
+        "enum": [
+          "school-holidays",
+          "public-holidays",
+          "observances",
+          "concerts",
+          "conferences",
+          "expos",
+          "festivals",
+          "performing-arts",
+          "sports",
+          "daylight-savings",
+          "airport-delays",
+          "severe-weather",
+          "disasters"
+        ]
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+
+  ]
+}

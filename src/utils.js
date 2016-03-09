@@ -5,9 +5,17 @@
 
 import logger from 'loglevel'
 
-//import * as lodash from "lodash"
 import * as lodash from "../dist/lodash.custom"
 
 export const _ = lodash
+
+// temp until fix src/** is found
+_.mixin
+_.fromPairs
+_.indexOf
+_.isArray
+_.map
+_.toPairs
+
 
 export { logger }
