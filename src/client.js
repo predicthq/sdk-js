@@ -1,6 +1,8 @@
 import {_, logger} from "./utils"
 
 import Events from "./endpoints/v1/events"
+import Users from "./endpoints/v1/users"
+import Accounts from "./endpoints/v1/accounts"
 
 import {polyfill} from 'es6-promise'
 polyfill()
@@ -23,6 +25,8 @@ class Client {
         this.options = options
 
         this.events = new Events(this)
+        this.users = new Users(this)
+        this.accounts = new Accounts(this)
 
     }
 
@@ -50,7 +54,10 @@ class Client {
                 })
                 .then(function(result) {
 
-                    return resolve(new returnClass(result))
+                    if (typeof(returnClass) == 'object')
+                        return resolve(new returnClass(result))
+                    else
+                        return resolve(result)
 
                 })
                 .catch(function(err) {
