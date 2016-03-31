@@ -20,7 +20,7 @@ let log = logger.getLogger("predicthq.client")
 class Client {
 
     constructor(options){
-        this.baseUrl = process.env.ENDPOINT_URL
+        this.baseUrl = options.endpoint || process.env.ENDPOINT_URL
 
         this.options = options
 
@@ -47,12 +47,13 @@ class Client {
                     'Accept': 'application/json'
                 }
             }).then(function(response) {
-                    if (response.status >= 400) {
-                        throw new Error("Bad response from server");
-                    }
                     return response.json();
                 })
                 .then(function(result) {
+
+                    if (result.hasOwnProperty('error')){
+                        return reject(result)
+                    }
 
                     if (typeof(returnClass) == 'object')
                         return resolve(new returnClass(result))
@@ -61,8 +62,7 @@ class Client {
 
                 })
                 .catch(function(err) {
-                    log.warn(err)
-                    return reject(err)
+                    return reject({code:null, error: err})
                 });
         })
 
