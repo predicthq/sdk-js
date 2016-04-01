@@ -20,6 +20,9 @@ let log = logger.getLogger("predicthq.client")
 class Client {
 
     constructor(options){
+
+        options = options || {}
+
         this.baseUrl = options.endpoint || process.env.ENDPOINT_URL
 
         this.options = options
@@ -55,7 +58,7 @@ class Client {
                         return reject(result)
                     }
 
-                    if (typeof(returnClass) == 'object')
+                    if (returnClass)
                         return resolve(new returnClass(result))
                     else
                         return resolve(result)

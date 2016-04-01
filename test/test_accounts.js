@@ -33,7 +33,7 @@ describe('Accounts', () => {
 
     }),
 
-    it.only('Subscriptions', (done) => {
+    it('Subscriptions', (done) => {
 
         let c = new Client({ access_token : access_token})
 
