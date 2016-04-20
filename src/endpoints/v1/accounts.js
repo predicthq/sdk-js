@@ -10,12 +10,10 @@ import {EventSchema} from "./schemas"
 
 import {Validator} from 'jsonschema'
 
+import BaseEndpoint from "../base"
 
-class Accounts {
 
-    constructor(client){
-        this.client = client
-    }
+class Accounts extends BaseEndpoint {
 
     account(user = 'self'){
         return this.client.get(`/v1/accounts/${user}/`)

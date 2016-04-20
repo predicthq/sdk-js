@@ -7,4 +7,6 @@ var fs = require('fs')
 
 const EventSchema = JSON.parse(fs.readFileSync(__dirname + '/schemas/events.json', 'utf8'))
 
-export { EventSchema }
+const PlaceSchema = JSON.parse(fs.readFileSync(__dirname + '/schemas/places.json', 'utf8'))
+
+export { EventSchema, PlaceSchema }

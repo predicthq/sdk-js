@@ -8,53 +8,23 @@ import {ResultSet} from "../../resultset"
 
 import {EventSchema} from "./schemas"
 
-import {Validator} from 'jsonschema'
+import BaseEndpoint from "../base"
 
 class EventResultSet extends ResultSet { }
 class CalendarResultSet extends ResultSet { }
 
 
-class Events {
+class Events extends BaseEndpoint {
 
     constructor(client, accountId){
 
-        this.accountId = accountId
-        this.client = client
+        super(client)
+
         this.schema = EventSchema
         this.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'within','country']
         this.integerOptions = ['limit', 'offset', 'rank_level']
-    }
 
-    parseOptions(options, arrayOptions, integerOptions){
-
-        return _.fromPairs(_.map(_.toPairs(options), (item)=> {
-            if (_.indexOf(arrayOptions, item[0]) >= 0) {
-                if (typeof item[1] === 'string')
-                    item[1] = item[1].split(',')
-
-                if (!_.isArray(item[1]))
-                    item[1] = [item[1]]
-            }
-
-            if (_.indexOf(integerOptions, item[0]) >= 0){
-                if (!_.isArray(item[1]))
-                    item[1] = parseInt(item[1])
-                else
-                    item[1] = _.map(item[1],(x)=>{ return parseInt(x)})
-            }
-
-            return item
-        }))
-
-    }
-
-    validate(options){
-
-        let v = new Validator()
-
-        let _options = this.parseOptions(options, this.arrayOptions, this.integerOptions)
-
-        return v.validate(_options, this.schema)
+        this.accountId = accountId
 
     }
 
@@ -80,22 +50,12 @@ class Events {
 
         let validate = this.validate(options)
 
-        if (validate.valid) {
+        if (validate.valid)
             return this.client.get(this.build_url('v1','/events/calendar/'), CalendarResultSet, options)
-        }
 
         return new Promise((resolve, reject) => {
             return reject(validate.errors[0])
         })
-
-    }
-
-    // todo move these to mixin
-    build_url(prefix, suffix){
-        if (this.accountId)
-            return `/${prefix}/accounts/${_.trim(this.accountId,'/')}/${_.trim(suffix,'/')}/`
-        else
-            return `/${prefix}/${_.trim(suffix,'/')}/`
 
     }
 

@@ -49,7 +49,23 @@ describe('Events', () => {
 
     }),
 
-    it.only('Calendar', (done) => {
+    it('Search using account', (done) => {
+
+    let c = new Client({ access_token : access_token})
+
+    c.events.for_account(test_account_id).search()
+        .then((results)=>{
+
+            // default limit 10 records
+            expect(results.toArray().length).toEqual(10)
+
+            done()
+
+        }).catch(done)
+
+    }),
+
+    it('Calendar', (done) => {
 
     let c = new Client({ access_token : access_token})
 
@@ -73,7 +89,7 @@ describe('Events', () => {
 
     })
 
-     it.only('Calendar for Account', (done) => {
+   it('Calendar using Account', (done) => {
 
     let c = new Client({ access_token : access_token})
 
@@ -85,7 +101,7 @@ describe('Events', () => {
          'top_events.sort' : ['rank']
      }
 
-    c.events.for_account('x').calendar(options)
+    c.events.for_account(test_account_id).calendar(options)
         .then((results)=>{
 
             let days = _.keyBy(results.toArray(),'date')

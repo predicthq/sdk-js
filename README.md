@@ -47,6 +47,9 @@
 ## Endpoints
 
 * Client.events
+* Client.accounts
+
+
 
 
 For a description of all available endpoints, refer to our [API Documentation](https://developer.predicthq.com/).
