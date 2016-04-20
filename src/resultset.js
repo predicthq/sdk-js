@@ -2,6 +2,8 @@
 
 */
 
+import "core-js/es6/symbol"
+
 class ResultSet {
     constructor(result){
         this.result  = result

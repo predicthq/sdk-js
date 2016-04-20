@@ -11,11 +11,14 @@ import {EventSchema} from "./schemas"
 import {Validator} from 'jsonschema'
 
 class EventResultSet extends ResultSet { }
+class CalendarResultSet extends ResultSet { }
 
 
 class Events {
 
-    constructor(client){
+    constructor(client, accountId){
+
+        this.accountId = accountId
         this.client = client
         this.schema = EventSchema
         this.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'within','country']
@@ -69,6 +72,35 @@ class Events {
             return reject(validate.errors[0])
         })
 
+    }
+
+    calendar(options){
+
+        options = options || {}
+
+        let validate = this.validate(options)
+
+        if (validate.valid) {
+            return this.client.get(this.build_url('v1','/events/calendar/'), CalendarResultSet, options)
+        }
+
+        return new Promise((resolve, reject) => {
+            return reject(validate.errors[0])
+        })
+
+    }
+
+    // todo move these to mixin
+    build_url(prefix, suffix){
+        if (this.accountId)
+            return `/${prefix}/accounts/${_.trim(this.accountId,'/')}/${_.trim(suffix,'/')}/`
+        else
+            return `/${prefix}/${_.trim(suffix,'/')}/`
+
+    }
+
+    for_account(id){
+        return new Events(this.client, id)
     }
 
 }

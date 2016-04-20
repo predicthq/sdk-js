@@ -16,6 +16,7 @@ _.indexOf
 _.isArray
 _.map
 _.toPairs
+_.trim
 
 
 export { logger }

@@ -1,6 +1,8 @@
 import {_, logger} from "./utils"
 
 import Events from "./endpoints/v1/events"
+import Users from "./endpoints/v1/users"
+import Accounts from "./endpoints/v1/accounts"
 
 import {polyfill} from 'es6-promise'
 polyfill()
@@ -18,11 +20,16 @@ let log = logger.getLogger("predicthq.client")
 class Client {
 
     constructor(options){
-        this.baseUrl = process.env.ENDPOINT_URL
+
+        options = options || {}
+
+        this.baseUrl = options.endpoint || process.env.ENDPOINT_URL
 
         this.options = options
 
         this.events = new Events(this)
+        this.users = new Users(this)
+        this.accounts = new Accounts(this)
 
     }
 
@@ -43,19 +50,22 @@ class Client {
                     'Accept': 'application/json'
                 }
             }).then(function(response) {
-                    if (response.status >= 400) {
-                        throw new Error("Bad response from server");
-                    }
                     return response.json();
                 })
                 .then(function(result) {
 
-                    return resolve(new returnClass(result))
+                    if (result.hasOwnProperty('error')){
+                        return reject(result)
+                    }
+
+                    if (returnClass)
+                        return resolve(new returnClass(result))
+                    else
+                        return resolve(result)
 
                 })
                 .catch(function(err) {
-                    log.warn(err)
-                    return reject(err)
+                    return reject({code:null, error: err})
                 });
         })
 
