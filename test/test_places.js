@@ -18,7 +18,7 @@ logger.getLogger("predicthq.client").setLevel('DEBUG')
 let access_token = process.env.ACCESS_TOKEN
 
 describe('Places', () => {
-    it.only('Search', (done) => {
+    it('Search', (done) => {
 
     let c = new Client({ access_token : access_token})
 
