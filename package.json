@@ -2,13 +2,13 @@
   "name": "predicthq",
   "version": "0.0.4",
   "description": "PredictHQ Event Intelligence",
-  "main": "index.js",
+  "main": "dist/predicthq.js",
   "scripts": {
     "lint": " node node_modules/eslint/bin/eslint.js  ./src/",
     "test": "NODE_ENV=test node_modules/mocha/bin/mocha --require babel-core/register test",
     "test_browser": "ACCESS_TOKEN=$(node -r dotenv/config -e 'console.log(process.env.ACCESS_TOKEN)'); ENDPOINT_URL=$(node -r dotenv/config -e 'console.log(process.env.ENDPOINT_URL)'); node_modules/mocha-phantomjs/bin/mocha-phantomjs --web-security no -b -R dot test/browser/runner.html?endpoint=${ENDPOINT_URL}\\&token=${ACCESS_TOKEN}",
     "update": "node node_modules/npm-check-updates/bin/npm-check-updates --upgradeAll",
-    "build": "NODE_ENV=production node node_modules/browserify/bin/cmd.js index.js -t babelify | node_modules/uglify-js/bin/uglifyjs -o dist/predicthq.js; node build.js",
+    "build": "NODE_ENV=production node node_modules/browserify/bin/cmd.js src/client.js -t babelify | node_modules/uglify-js/bin/uglifyjs -o dist/predicthq.js; node build.js",
     "list_lodash_methods": "node_modules/lodash-modularize/bin/lodash-modularize src/**/**/*.js --list -g _",
     "lodash": "lodash_methods=$(npm run --silent list_lodash_methods | sed -e \"s/\\x1b\\[.\\{1,5\\}m//g\"); node_modules/lodash-cli/bin/lodash -o dist/lodash.custom.js include=$lodash_methods",
     "coverage": "node_modules/.bin/babel-node node_modules/babel-istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha -- test",
@@ -43,10 +43,10 @@
     "core-js": "2.1.4",
     "dotenv": "2.0.0",
     "es6-promise": "3.1.2",
-    "isomorphic-fetch": "2.2.1",
     "jsonschema": "1.1.0",
     "lodash": "4.6.1",
     "loglevel": "1.4.0",
+    "whatwg-fetch": "^0.11.0",
     "youarei": "1.0.2"
   },
   "devDependencies": {
@@ -71,6 +71,7 @@
     "module-deps": "4.0.5",
     "mversion": "1.10.1",
     "nock": "7.2.2",
+    "node-fetch": "^1.5.1",
     "npm-check-updates": "2.5.8",
     "uglify-js": "2.6.2"
   }

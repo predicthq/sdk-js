@@ -6,7 +6,7 @@
 import _ from "lodash"
 _.extend(global, require('./shared'))
 
-import Client from '../index'
+import Client from '../src/client'
 
 let c = new Client()
 

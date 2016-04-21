@@ -16,7 +16,7 @@ var browserify = require('browserify')
 var target = "dist/predicthq.js"
 
 var b = browserify({standalone: 'PredictHQ', debug:false, expose: 'deps'})
-b.add('./index.js')
+b.add('./src/client.js')
 
 b.transform('babelify')
 

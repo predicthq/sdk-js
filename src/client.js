@@ -8,19 +8,19 @@ import Accounts from "./endpoints/v1/accounts"
 import {polyfill} from 'es6-promise'
 polyfill()
 
-import 'isomorphic-fetch'
+// For the browser only (server side must bring their own fetch lib)
+import 'whatwg-fetch'
 
 import YouAreI from 'youarei'
 
 import dotenv from 'dotenv'
 dotenv.config({silent: true})
 
-
 let log = logger.getLogger("predicthq.client")
 
 class Client {
 
-    constructor(options){
+    constructor(options) {
 
         options = options || {}
 
@@ -33,7 +33,20 @@ class Client {
         this.users = new Users(this)
         this.accounts = new Accounts(this)
 
+        this.fetch = options.fetch || false
+        if (!this.fetch){
+            // Server
+            if (typeof(global) != 'undefined' && global.hasOwnProperty('fetch'))
+                this.fetch = global.fetch
+            // Browser
+            else if (typeof(window) != 'undefined' && window.hasOwnProperty('fetch'))
+                this.fetch = window.fetch
+            else {
+                this.fetch = ()=> { throw "No Fetch Library present. You must provide one!" }
+            }
+        }
     }
+
 
     request(method, path, returnClass, options){
 
@@ -42,6 +55,8 @@ class Client {
         let uri = new YouAreI(`${this.baseUrl}${path}`)
 
         uri.query_push(options)
+
+        let fetch = this.fetch
 
         return new Promise((resolve, reject) => {
 
@@ -82,6 +97,7 @@ class Client {
 
 }
 
+export default Client
 export {
     Client
 }
