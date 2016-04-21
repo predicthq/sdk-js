@@ -8,7 +8,7 @@ _.extend(global, require('./shared'))
 
 import {logger} from "../src/utils"
 
-import Client from '../index'
+import Client from '../src/client'
 
 // Logging Levels
 logger.getLogger("predicthq.client").setLevel('DEBUG')

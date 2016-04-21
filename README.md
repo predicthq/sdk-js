@@ -43,6 +43,20 @@
                 console.info(event.title)
         })
  
+## NodeJS
+
+You will need to bring your own fetch library
+    
+    // npm install node-fetch
+    global.fetch = require('node-fetch') 
+    var Client = require('predicthq')
+    
+    // or
+    var fetch = require('node-fetch')
+    var Client = require('predicthq')
+    var phq = new Client({access_token: "ACCESS_TOKEN", fetch: fetch})
+    
+
 
 ## Endpoints
 

@@ -10,7 +10,7 @@ _.extend(global, require('./shared'))
 
 import {logger} from "../src/utils"
 
-import Client from '../index'
+import Client from '../src/client'
 
 // Logging Levels
 logger.getLogger("predicthq.client").setLevel('DEBUG')
@@ -18,7 +18,6 @@ logger.getLogger("predicthq.client").setLevel('DEBUG')
 
 let access_token = process.env.ACCESS_TOKEN
 let test_account_id = process.env.TEST_ACCOUNT_ID
-
 
 describe('Events', () => {
     it('Search', (done) => {

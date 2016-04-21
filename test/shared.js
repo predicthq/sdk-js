@@ -6,6 +6,8 @@
 
  */
 
+global.fetch = require('node-fetch')
+
 import expect from 'expect'
 import nock from 'nock'
 
