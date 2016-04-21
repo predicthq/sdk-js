@@ -14,6 +14,7 @@ _.mixin
 _.fromPairs
 _.indexOf
 _.isArray
+_.isString
 _.map
 _.toPairs
 _.trim

@@ -4,12 +4,14 @@
     <title>Mocha</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="mocha.css" />
+    <link rel="stylesheet" href="deps/mocha.css" />
   </head>
   <body>
     <div id="mocha"></div>
-    <script src="expect.min.js"></script>
-    <script src="mocha.js"></script>
+    <script src="deps/expect.min.js"></script>
+    <script src="deps/mocha.js"></script>
+    <script src="deps/youarei.min.js"></script>
+
     <script>mocha.setup('bdd');</script>
     <script src="../../dist/predicthq.js"></script>
     <script src="tests.js"></script>

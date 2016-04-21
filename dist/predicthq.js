@@ -12,8 +12,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
 /**
  * @license
- * lodash 4.5.1 (Custom Build) <https://lodash.com/>
- * Build: `lodash -o dist/lodash.custom.js include="fromPairs,indexOf,isArray,map,toPairs"`
+ * lodash 4.6.1 (Custom Build) <https://lodash.com/>
+ * Build: `lodash -o dist/lodash.custom.js include="fromPairs,indexOf,isArray,map,toPairs,trim"`
  * Copyright 2012-2016 The Dojo Foundation <http://dojofoundation.org/>
  * Based on Underscore.js 1.8.3 <http://underscorejs.org/LICENSE>
  * Copyright 2009-2016 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
@@ -25,17 +25,17 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.5.1';
-
-  /** Used to compose bitmasks for comparison styles. */
-  var UNORDERED_COMPARE_FLAG = 1,
-      PARTIAL_COMPARE_FLAG = 2;
+  var VERSION = '4.6.1';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
 
   /** Used to stand-in for `undefined` hash values. */
   var HASH_UNDEFINED = '__lodash_hash_undefined__';
+
+  /** Used to compose bitmasks for comparison styles. */
+  var UNORDERED_COMPARE_FLAG = 1,
+      PARTIAL_COMPARE_FLAG = 2;
 
   /** Used as references for various `Number` constants. */
   var INFINITY = 1 / 0,
@@ -103,6 +103,32 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
   /** Used to detect unsigned integer values. */
   var reIsUint = /^(?:0|[1-9]\d*)$/;
 
+  /** Used to compose unicode character classes. */
+  var rsAstralRange = "\\ud800-\\udfff",
+      rsComboMarksRange = "\\u0300-\\u036f\\ufe20-\\ufe23",
+      rsComboSymbolsRange = "\\u20d0-\\u20f0",
+      rsVarRange = "\\ufe0e\\ufe0f";
+
+  /** Used to compose unicode capture groups. */
+  var rsAstral = '[' + rsAstralRange + ']',
+      rsCombo = '[' + rsComboMarksRange + rsComboSymbolsRange + ']',
+      rsFitz = "\\ud83c[\\udffb-\\udfff]",
+      rsModifier = '(?:' + rsCombo + '|' + rsFitz + ')',
+      rsNonAstral = '[^' + rsAstralRange + ']',
+      rsRegional = "(?:\\ud83c[\\udde6-\\uddff]){2}",
+      rsSurrPair = "[\\ud800-\\udbff][\\udc00-\\udfff]",
+      rsZWJ = "\\u200d";
+
+  /** Used to compose unicode regexes. */
+  var reOptMod = rsModifier + '?',
+      rsOptVar = '[' + rsVarRange + ']?',
+      rsOptJoin = '(?:' + rsZWJ + '(?:' + [rsNonAstral, rsRegional, rsSurrPair].join('|') + ')' + rsOptVar + reOptMod + ')*',
+      rsSeq = rsOptVar + reOptMod + rsOptJoin,
+      rsSymbol = '(?:' + [rsNonAstral + rsCombo + '?', rsCombo, rsRegional, rsSurrPair, rsAstral].join('|') + ')';
+
+  /** Used to match [string symbols](https://mathiasbynens.be/notes/javascript-unicode). */
+  var reComplexSymbol = RegExp(rsFitz + '(?=' + rsFitz + ')|' + rsSymbol + rsSeq, 'g');
+
   /** Used to identify `toStringTag` values of typed arrays. */
   var typedArrayTags = {};
   typedArrayTags[float32Tag] = typedArrayTags[float64Tag] = typedArrayTags[int8Tag] = typedArrayTags[int16Tag] = typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] = typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] = typedArrayTags[uint32Tag] = true;
@@ -162,6 +188,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {Object} Returns `map`.
    */
   function addMapEntry(map, pair) {
+    // Don't return `Map#set` because it doesn't return the map instance in IE 11.
     map.set(pair[0], pair[1]);
     return map;
   }
@@ -324,6 +351,39 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
   }
 
   /**
+   * Used by `_.trim` and `_.trimStart` to get the index of the first string symbol
+   * that is not found in the character symbols.
+   *
+   * @private
+   * @param {Array} strSymbols The string symbols to inspect.
+   * @param {Array} chrSymbols The character symbols to find.
+   * @returns {number} Returns the index of the first unmatched string symbol.
+   */
+  function charsStartIndex(strSymbols, chrSymbols) {
+    var index = -1,
+        length = strSymbols.length;
+
+    while (++index < length && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}
+    return index;
+  }
+
+  /**
+   * Used by `_.trim` and `_.trimEnd` to get the index of the last string symbol
+   * that is not found in the character symbols.
+   *
+   * @private
+   * @param {Array} strSymbols The string symbols to inspect.
+   * @param {Array} chrSymbols The character symbols to find.
+   * @returns {number} Returns the index of the last unmatched string symbol.
+   */
+  function charsEndIndex(strSymbols, chrSymbols) {
+    var index = strSymbols.length;
+
+    while (index-- && baseIndexOf(chrSymbols, strSymbols[index], 0) > -1) {}
+    return index;
+  }
+
+  /**
    * Checks if `value` is a global object.
    *
    * @private
@@ -423,6 +483,17 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
     return result;
   }
 
+  /**
+   * Converts `string` to an array.
+   *
+   * @private
+   * @param {string} string The string to convert.
+   * @returns {Array} Returns the converted array.
+   */
+  function stringToArray(string) {
+    return string.match(reComplexSymbol);
+  }
+
   /*--------------------------------------------------------------------------*/
 
   /** Used for built-in method references. */
@@ -464,6 +535,9 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
       WeakMap = getNative(root, 'WeakMap'),
       nativeCreate = getNative(Object, 'create');
 
+  /** Used to lookup unminified function names. */
+  var realNames = {};
+
   /** Used to detect maps, sets, and weakmaps. */
   var mapCtorString = Map ? funcToString.call(Map) : '',
       setCtorString = Set ? funcToString.call(Set) : '',
@@ -471,11 +545,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
   /** Used to convert symbols to primitives and strings. */
   var symbolProto = _Symbol ? _Symbol.prototype : undefined,
-      symbolValueOf = _Symbol ? symbolProto.valueOf : undefined,
-      symbolToString = _Symbol ? symbolProto.toString : undefined;
-
-  /** Used to lookup unminified function names. */
-  var realNames = {};
+      symbolValueOf = symbolProto ? symbolProto.valueOf : undefined,
+      symbolToString = symbolProto ? symbolProto.toString : undefined;
 
   /*------------------------------------------------------------------------*/
 
@@ -521,46 +592,48 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * `after`, `ary`, `assign`, `assignIn`, `assignInWith`, `assignWith`, `at`,
    * `before`, `bind`, `bindAll`, `bindKey`, `castArray`, `chain`, `chunk`,
    * `commit`, `compact`, `concat`, `conforms`, `constant`, `countBy`, `create`,
-   * `curry`, `debounce`, `defaults`, `defaultsDeep`, `defer`, `delay`, `difference`,
-   * `differenceBy`, `differenceWith`, `drop`, `dropRight`, `dropRightWhile`,
-   * `dropWhile`, `fill`, `filter`, `flatten`, `flattenDeep`, `flattenDepth`,
-   * `flip`, `flow`, `flowRight`, `fromPairs`, `functions`, `functionsIn`,
-   * `groupBy`, `initial`, `intersection`, `intersectionBy`, `intersectionWith`,
-   * `invert`, `invertBy`, `invokeMap`, `iteratee`, `keyBy`, `keys`, `keysIn`,
-   * `map`, `mapKeys`, `mapValues`, `matches`, `matchesProperty`, `memoize`,
-   * `merge`, `mergeWith`, `method`, `methodOf`, `mixin`, `negate`, `nthArg`,
-   * `omit`, `omitBy`, `once`, `orderBy`, `over`, `overArgs`, `overEvery`,
-   * `overSome`, `partial`, `partialRight`, `partition`, `pick`, `pickBy`, `plant`,
-   * `property`, `propertyOf`, `pull`, `pullAll`, `pullAllBy`, `pullAt`, `push`,
-   * `range`, `rangeRight`, `rearg`, `reject`, `remove`, `rest`, `reverse`,
-   * `sampleSize`, `set`, `setWith`, `shuffle`, `slice`, `sort`, `sortBy`,
-   * `splice`, `spread`, `tail`, `take`, `takeRight`, `takeRightWhile`,
-   * `takeWhile`, `tap`, `throttle`, `thru`, `toArray`, `toPairs`, `toPairsIn`,
-   * `toPath`, `toPlainObject`, `transform`, `unary`, `union`, `unionBy`,
-   * `unionWith`, `uniq`, `uniqBy`, `uniqWith`, `unset`, `unshift`, `unzip`,
-   * `unzipWith`, `values`, `valuesIn`, `without`, `wrap`, `xor`, `xorBy`,
-   * `xorWith`, `zip`, `zipObject`, `zipObjectDeep`, and `zipWith`
+   * `curry`, `debounce`, `defaults`, `defaultsDeep`, `defer`, `delay`,
+   * `difference`, `differenceBy`, `differenceWith`, `drop`, `dropRight`,
+   * `dropRightWhile`, `dropWhile`, `extend`, `extendWith`, `fill`, `filter`,
+   * `flatten`, `flattenDeep`, `flattenDepth`, `flip`, `flow`, `flowRight`,
+   * `fromPairs`, `functions`, `functionsIn`, `groupBy`, `initial`, `intersection`,
+   * `intersectionBy`, `intersectionWith`, `invert`, `invertBy`, `invokeMap`,
+   * `iteratee`, `keyBy`, `keys`, `keysIn`, `map`, `mapKeys`, `mapValues`,
+   * `matches`, `matchesProperty`, `memoize`, `merge`, `mergeWith`, `method`,
+   * `methodOf`, `mixin`, `negate`, `nthArg`, `omit`, `omitBy`, `once`, `orderBy`,
+   * `over`, `overArgs`, `overEvery`, `overSome`, `partial`, `partialRight`,
+   * `partition`, `pick`, `pickBy`, `plant`, `property`, `propertyOf`, `pull`,
+   * `pullAll`, `pullAllBy`, `pullAllWith`, `pullAt`, `push`, `range`,
+   * `rangeRight`, `rearg`, `reject`, `remove`, `rest`, `reverse`, `sampleSize`,
+   * `set`, `setWith`, `shuffle`, `slice`, `sort`, `sortBy`, `splice`, `spread`,
+   * `tail`, `take`, `takeRight`, `takeRightWhile`, `takeWhile`, `tap`, `throttle`,
+   * `thru`, `toArray`, `toPairs`, `toPairsIn`, `toPath`, `toPlainObject`,
+   * `transform`, `unary`, `union`, `unionBy`, `unionWith`, `uniq`, `uniqBy`,
+   * `uniqWith`, `unset`, `unshift`, `unzip`, `unzipWith`, `update`, `values`,
+   * `valuesIn`, `without`, `wrap`, `xor`, `xorBy`, `xorWith`, `zip`, `zipObject`,
+   * `zipObjectDeep`, and `zipWith`
    *
    * The wrapper methods that are **not** chainable by default are:
    * `add`, `attempt`, `camelCase`, `capitalize`, `ceil`, `clamp`, `clone`,
-   * `cloneDeep`, `cloneDeepWith`, `cloneWith`, `deburr`, `endsWith`, `eq`,
-   * `escape`, `escapeRegExp`, `every`, `find`, `findIndex`, `findKey`, `findLast`,
-   * `findLastIndex`, `findLastKey`, `floor`, `forEach`, `forEachRight`, `forIn`,
-   * `forInRight`, `forOwn`, `forOwnRight`, `get`, `gt`, `gte`, `has`, `hasIn`,
-   * `head`, `identity`, `includes`, `indexOf`, `inRange`, `invoke`, `isArguments`,
-   * `isArray`, `isArrayBuffer`, `isArrayLike`, `isArrayLikeObject`, `isBoolean`,
-   * `isBuffer`, `isDate`, `isElement`, `isEmpty`, `isEqual`, `isEqualWith`,
-   * `isError`, `isFinite`, `isFunction`, `isInteger`, `isLength`, `isMap`,
-   * `isMatch`, `isMatchWith`, `isNaN`, `isNative`, `isNil`, `isNull`, `isNumber`,
-   * `isObject`, `isObjectLike`, `isPlainObject`, `isRegExp`, `isSafeInteger`,
-   * `isSet`, `isString`, `isUndefined`, `isTypedArray`, `isWeakMap`, `isWeakSet`,
-   * `join`, `kebabCase`, `last`, `lastIndexOf`, `lowerCase`, `lowerFirst`,
-   * `lt`, `lte`, `max`, `maxBy`, `mean`, `min`, `minBy`, `noConflict`, `noop`,
-   * `now`, `pad`, `padEnd`, `padStart`, `parseInt`, `pop`, `random`, `reduce`,
-   * `reduceRight`, `repeat`, `result`, `round`, `runInContext`, `sample`,
-   * `shift`, `size`, `snakeCase`, `some`, `sortedIndex`, `sortedIndexBy`,
-   * `sortedLastIndex`, `sortedLastIndexBy`, `startCase`, `startsWith`, `subtract`,
-   * `sum`, `sumBy`, `template`, `times`, `toLower`, `toInteger`, `toLength`,
+   * `cloneDeep`, `cloneDeepWith`, `cloneWith`, `deburr`, `each`, `eachRight`,
+   * `endsWith`, `eq`, `escape`, `escapeRegExp`, `every`, `find`, `findIndex`,
+   * `findKey`, `findLast`, `findLastIndex`, `findLastKey`, `first`, `floor`,
+   * `forEach`, `forEachRight`, `forIn`, `forInRight`, `forOwn`, `forOwnRight`,
+   * `get`, `gt`, `gte`, `has`, `hasIn`, `head`, `identity`, `includes`,
+   * `indexOf`, `inRange`, `invoke`, `isArguments`, `isArray`, `isArrayBuffer`,
+   * `isArrayLike`, `isArrayLikeObject`, `isBoolean`, `isBuffer`, `isDate`,
+   * `isElement`, `isEmpty`, `isEqual`, `isEqualWith`, `isError`, `isFinite`,
+   * `isFunction`, `isInteger`, `isLength`, `isMap`, `isMatch`, `isMatchWith`,
+   * `isNaN`, `isNative`, `isNil`, `isNull`, `isNumber`, `isObject`, `isObjectLike`,
+   * `isPlainObject`, `isRegExp`, `isSafeInteger`, `isSet`, `isString`,
+   * `isUndefined`, `isTypedArray`, `isWeakMap`, `isWeakSet`, `join`, `kebabCase`,
+   * `last`, `lastIndexOf`, `lowerCase`, `lowerFirst`, `lt`, `lte`, `max`,
+   * `maxBy`, `mean`, `min`, `minBy`, `noConflict`, `noop`, `now`, `pad`,
+   * `padEnd`, `padStart`, `parseInt`, `pop`, `random`, `reduce`, `reduceRight`,
+   * `repeat`, `result`, `round`, `runInContext`, `sample`, `shift`, `size`,
+   * `snakeCase`, `some`, `sortedIndex`, `sortedIndexBy`, `sortedLastIndex`,
+   * `sortedLastIndexBy`, `startCase`, `startsWith`, `subtract`, `sum`, `sumBy`,
+   * `template`, `times`, `toInteger`, `toJSON`, `toLength`, `toLower`,
    * `toNumber`, `toSafeInteger`, `toString`, `toUpper`, `trim`, `trimEnd`,
    * `trimStart`, `truncate`, `unescape`, `uniqueId`, `upperCase`, `upperFirst`,
    * `value`, and `words`
@@ -1008,13 +1081,14 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @private
    * @param {*} value The value to clone.
    * @param {boolean} [isDeep] Specify a deep clone.
+   * @param {boolean} [isFull] Specify a clone including symbols.
    * @param {Function} [customizer] The function to customize cloning.
    * @param {string} [key] The key of `value`.
    * @param {Object} [object] The parent object of `value`.
    * @param {Object} [stack] Tracks traversed objects and their clone counterparts.
    * @returns {*} Returns the cloned value.
    */
-  function baseClone(value, isDeep, customizer, key, object, stack) {
+  function baseClone(value, isDeep, isFull, customizer, key, object, stack) {
     var result;
     if (customizer) {
       result = object ? customizer(value, key, object, stack) : customizer(value);
@@ -1044,7 +1118,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
         }
         result = initCloneObject(isFunc ? {} : value);
         if (!isDeep) {
-          return copySymbols(value, baseAssign(result, value));
+          result = baseAssign(result, value);
+          return isFull ? copySymbols(value, result) : result;
         }
       } else {
         if (!cloneableTags[tag]) {
@@ -1063,9 +1138,9 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
     // Recursively populate clone (susceptible to call stack limits).
     (isArr ? arrayEach : baseForOwn)(value, function (subValue, key) {
-      assignValue(result, key, baseClone(subValue, isDeep, customizer, key, value, stack));
+      assignValue(result, key, baseClone(subValue, isDeep, isFull, customizer, key, value, stack));
     });
-    return isArr ? result : copySymbols(value, result);
+    return isFull && !isArr ? copySymbols(value, result) : result;
   }
 
   /**
@@ -1210,33 +1285,26 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
 
     if (!objIsArr) {
       objTag = getTag(object);
-      if (objTag == argsTag) {
-        objTag = objectTag;
-      } else if (objTag != objectTag) {
-        objIsArr = isTypedArray(object);
-      }
+      objTag = objTag == argsTag ? objectTag : objTag;
     }
     if (!othIsArr) {
       othTag = getTag(other);
-      if (othTag == argsTag) {
-        othTag = objectTag;
-      } else if (othTag != objectTag) {
-        othIsArr = isTypedArray(other);
-      }
+      othTag = othTag == argsTag ? objectTag : othTag;
     }
     var objIsObj = objTag == objectTag && !isHostObject(object),
         othIsObj = othTag == objectTag && !isHostObject(other),
         isSameTag = objTag == othTag;
 
-    if (isSameTag && !(objIsArr || objIsObj)) {
-      return equalByTag(object, other, objTag, equalFunc, customizer, bitmask);
+    if (isSameTag && !objIsObj) {
+      stack || (stack = new Stack());
+      return objIsArr || isTypedArray(object) ? equalArrays(object, other, equalFunc, customizer, bitmask, stack) : equalByTag(object, other, objTag, equalFunc, customizer, bitmask, stack);
     }
-    var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
-    if (!isPartial) {
+    if (!(bitmask & PARTIAL_COMPARE_FLAG)) {
       var objIsWrapped = objIsObj && hasOwnProperty.call(object, '__wrapped__'),
           othIsWrapped = othIsObj && hasOwnProperty.call(other, '__wrapped__');
 
       if (objIsWrapped || othIsWrapped) {
+        stack || (stack = new Stack());
         return equalFunc(objIsWrapped ? object.value() : object, othIsWrapped ? other.value() : other, customizer, bitmask, stack);
       }
     }
@@ -1244,7 +1312,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
       return false;
     }
     stack || (stack = new Stack());
-    return (objIsArr ? equalArrays : equalObjects)(object, other, equalFunc, customizer, bitmask, stack);
+    return equalObjects(object, other, equalFunc, customizer, bitmask, stack);
   }
 
   /**
@@ -1453,9 +1521,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
     if (isDeep) {
       return buffer.slice();
     }
-    var Ctor = buffer.constructor,
-        result = new Ctor(buffer.length);
-
+    var result = new buffer.constructor(buffer.length);
     buffer.copy(result);
     return result;
   }
@@ -1468,11 +1534,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {ArrayBuffer} Returns the cloned array buffer.
    */
   function cloneArrayBuffer(arrayBuffer) {
-    var Ctor = arrayBuffer.constructor,
-        result = new Ctor(arrayBuffer.byteLength),
-        view = new Uint8Array(result);
-
-    view.set(new Uint8Array(arrayBuffer));
+    var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
+    new Uint8Array(result).set(new Uint8Array(arrayBuffer));
     return result;
   }
 
@@ -1484,8 +1547,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {Object} Returns the cloned map.
    */
   function cloneMap(map) {
-    var Ctor = map.constructor;
-    return arrayReduce(mapToArray(map), addMapEntry, new Ctor());
+    return arrayReduce(mapToArray(map), addMapEntry, new map.constructor());
   }
 
   /**
@@ -1496,9 +1558,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {Object} Returns the cloned regexp.
    */
   function cloneRegExp(regexp) {
-    var Ctor = regexp.constructor,
-        result = new Ctor(regexp.source, reFlags.exec(regexp));
-
+    var result = new regexp.constructor(regexp.source, reFlags.exec(regexp));
     result.lastIndex = regexp.lastIndex;
     return result;
   }
@@ -1511,8 +1571,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {Object} Returns the cloned set.
    */
   function cloneSet(set) {
-    var Ctor = set.constructor;
-    return arrayReduce(setToArray(set), addSetEntry, new Ctor());
+    return arrayReduce(setToArray(set), addSetEntry, new set.constructor());
   }
 
   /**
@@ -1523,7 +1582,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {Object} Returns the cloned symbol object.
    */
   function cloneSymbol(symbol) {
-    return _Symbol ? Object(symbolValueOf.call(symbol)) : {};
+    return symbolValueOf ? Object(symbolValueOf.call(symbol)) : {};
   }
 
   /**
@@ -1535,11 +1594,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {Object} Returns the cloned typed array.
    */
   function cloneTypedArray(typedArray, isDeep) {
-    var arrayBuffer = typedArray.buffer,
-        buffer = isDeep ? cloneArrayBuffer(arrayBuffer) : arrayBuffer,
-        Ctor = typedArray.constructor;
-
-    return new Ctor(buffer, typedArray.byteOffset, typedArray.length);
+    var buffer = isDeep ? cloneArrayBuffer(typedArray.buffer) : typedArray.buffer;
+    return new typedArray.constructor(buffer, typedArray.byteOffset, typedArray.length);
   }
 
   /**
@@ -1674,9 +1730,9 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @param {Array} array The array to compare.
    * @param {Array} other The other array to compare.
    * @param {Function} equalFunc The function to determine equivalents of values.
-   * @param {Function} [customizer] The function to customize comparisons.
-   * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-   * @param {Object} [stack] Tracks traversed `array` and `other` objects.
+   * @param {Function} customizer The function to customize comparisons.
+   * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual` for more details.
+   * @param {Object} stack Tracks traversed `array` and `other` objects.
    * @returns {boolean} Returns `true` if the arrays are equivalent, else `false`.
    */
   function equalArrays(array, other, equalFunc, customizer, bitmask, stack) {
@@ -1741,11 +1797,12 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @param {Object} other The other object to compare.
    * @param {string} tag The `toStringTag` of the objects to compare.
    * @param {Function} equalFunc The function to determine equivalents of values.
-   * @param {Function} [customizer] The function to customize comparisons.
-   * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
+   * @param {Function} customizer The function to customize comparisons.
+   * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual` for more details.
+   * @param {Object} stack Tracks traversed `object` and `other` objects.
    * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
    */
-  function equalByTag(object, other, tag, equalFunc, customizer, bitmask) {
+  function equalByTag(object, other, tag, equalFunc, customizer, bitmask, stack) {
     switch (tag) {
       case arrayBufferTag:
         if (object.byteLength != other.byteLength || !equalFunc(new Uint8Array(object), new Uint8Array(other))) {
@@ -1779,11 +1836,21 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
         var isPartial = bitmask & PARTIAL_COMPARE_FLAG;
         convert || (convert = setToArray);
 
+        if (object.size != other.size && !isPartial) {
+          return false;
+        }
+        // Assume cyclic values are equal.
+        var stacked = stack.get(object);
+        if (stacked) {
+          return stacked == other;
+        }
         // Recursively compare objects (susceptible to call stack limits).
-        return (isPartial || object.size == other.size) && equalFunc(convert(object), convert(other), customizer, bitmask | UNORDERED_COMPARE_FLAG);
+        return equalArrays(convert(object), convert(other), equalFunc, customizer, bitmask | UNORDERED_COMPARE_FLAG, stack.set(object, other));
 
       case symbolTag:
-        return !!_Symbol && symbolValueOf.call(object) == symbolValueOf.call(other);
+        if (symbolValueOf) {
+          return symbolValueOf.call(object) == symbolValueOf.call(other);
+        }
     }
     return false;
   }
@@ -1796,9 +1863,9 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @param {Object} object The object to compare.
    * @param {Object} other The other object to compare.
    * @param {Function} equalFunc The function to determine equivalents of values.
-   * @param {Function} [customizer] The function to customize comparisons.
-   * @param {number} [bitmask] The bitmask of comparison flags. See `baseIsEqual` for more details.
-   * @param {Object} [stack] Tracks traversed `object` and `other` objects.
+   * @param {Function} customizer The function to customize comparisons.
+   * @param {number} bitmask The bitmask of comparison flags. See `baseIsEqual` for more details.
+   * @param {Object} stack Tracks traversed `object` and `other` objects.
    * @returns {boolean} Returns `true` if the objects are equivalent, else `false`.
    */
   function equalObjects(object, other, equalFunc, customizer, bitmask, stack) {
@@ -1910,7 +1977,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {*} Returns the function if it's native, else `undefined`.
    */
   function getNative(object, key) {
-    var value = object == null ? undefined : object[key];
+    var value = object[key];
     return isNative(value) ? value : undefined;
   }
 
@@ -2010,7 +2077,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * @returns {Object} Returns the initialized clone.
    */
   function initCloneObject(object) {
-    return isFunction(object.constructor) && !isPrototype(object) ? baseCreate(getPrototypeOf(object)) : {};
+    return typeof object.constructor == 'function' && !isPrototype(object) ? baseCreate(getPrototypeOf(object)) : {};
   }
 
   /**
@@ -2110,7 +2177,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    */
   function isPrototype(value) {
     var Ctor = value && value.constructor,
-        proto = isFunction(Ctor) && Ctor.prototype || objectProto;
+        proto = typeof Ctor == 'function' && Ctor.prototype || objectProto;
 
     return value === proto;
   }
@@ -2389,7 +2456,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    * // => false
    */
   function isArrayLike(value) {
-    return value != null && !(typeof value == 'function' && isFunction(value)) && isLength(getLength(value));
+    return value != null && isLength(getLength(value)) && !isFunction(value);
   }
 
   /**
@@ -2457,8 +2524,8 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    */
   function isFunction(value) {
     // The use of `Object#toString` avoids issues with the `typeof` operator
-    // in Safari 8 which returns 'object' for typed array constructors, and
-    // PhantomJS 1.9 which returns 'function' for `NodeList` instances.
+    // in Safari 8 which returns 'object' for typed array and weak map constructors,
+    // and PhantomJS 1.9 which returns 'function' for `NodeList` instances.
     var tag = isObject(value) ? objectToString.call(value) : '';
     return tag == funcTag || tag == genTag;
   }
@@ -2733,7 +2800,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
       return '';
     }
     if (isSymbol(value)) {
-      return _Symbol ? symbolToString.call(value) : '';
+      return symbolToString ? symbolToString.call(value) : '';
     }
     var result = value + '';
     return result == '0' && 1 / value == -INFINITY ? '-0' : result;
@@ -2867,6 +2934,47 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
    */
   function toPairs(object) {
     return baseToPairs(object, keys(object));
+  }
+
+  /*------------------------------------------------------------------------*/
+
+  /**
+   * Removes leading and trailing whitespace or specified characters from `string`.
+   *
+   * @static
+   * @memberOf _
+   * @category String
+   * @param {string} [string=''] The string to trim.
+   * @param {string} [chars=whitespace] The characters to trim.
+   * @param- {Object} [guard] Enables use as an iteratee for functions like `_.map`.
+   * @returns {string} Returns the trimmed string.
+   * @example
+   *
+   * _.trim('  abc  ');
+   * // => 'abc'
+   *
+   * _.trim('-_-abc-_-', '_-');
+   * // => 'abc'
+   *
+   * _.map(['  foo  ', '  bar  '], _.trim);
+   * // => ['foo', 'bar']
+   */
+  function trim(string, chars, guard) {
+    string = toString(string);
+    if (!string) {
+      return string;
+    }
+    if (guard || chars === undefined) {
+      return string.replace(reTrim, '');
+    }
+    chars = chars + '';
+    if (!chars) {
+      return string;
+    }
+    var strSymbols = stringToArray(string),
+        chrSymbols = stringToArray(chars);
+
+    return strSymbols.slice(charsStartIndex(strSymbols, chrSymbols), charsEndIndex(strSymbols, chrSymbols) + 1).join('');
   }
 
   /*------------------------------------------------------------------------*/
@@ -3024,6 +3132,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
   lodash.toInteger = toInteger;
   lodash.toNumber = toNumber;
   lodash.toString = toString;
+  lodash.trim = trim;
 
   /*------------------------------------------------------------------------*/
 
@@ -3074,14 +3183,12 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Client = undefined;
 
-require("core-js/es6/symbol");
-
 var _client = require("./src/client");
 
 exports.default = _client.Client;
 exports.Client = _client.Client;
 
-},{"./src/client":71,"core-js/es6/symbol":4}],3:[function(require,module,exports){
+},{"./src/client":71}],3:[function(require,module,exports){
 
 },{}],4:[function(require,module,exports){
 require('../modules/es6.symbol');
@@ -8544,6 +8651,18 @@ var _events = require("./endpoints/v1/events");
 
 var _events2 = _interopRequireDefault(_events);
 
+var _places = require("./endpoints/v1/places");
+
+var _places2 = _interopRequireDefault(_places);
+
+var _users = require("./endpoints/v1/users");
+
+var _users2 = _interopRequireDefault(_users);
+
+var _accounts = require("./endpoints/v1/accounts");
+
+var _accounts2 = _interopRequireDefault(_accounts);
+
 var _es6Promise = require("es6-promise");
 
 require("isomorphic-fetch");
@@ -8576,11 +8695,16 @@ var Client = function () {
     function Client(options) {
         _classCallCheck(this, Client);
 
-        this.baseUrl = "https://api.predicthq.com";
+        options = options || {};
+
+        this.baseUrl = options.endpoint || "https://api.predicthq.com";
 
         this.options = options;
 
         this.events = new _events2.default(this);
+        this.places = new _places2.default(this);
+        this.users = new _users2.default(this);
+        this.accounts = new _accounts2.default(this);
     }
 
     _createClass(Client, [{
@@ -8595,6 +8719,8 @@ var Client = function () {
 
             return new Promise(function (resolve, reject) {
 
+                log.debug(uri.to_string());
+
                 fetch(uri.to_string(), {
                     method: method,
                     headers: {
@@ -8602,16 +8728,16 @@ var Client = function () {
                         'Accept': 'application/json'
                     }
                 }).then(function (response) {
-                    if (response.status >= 400) {
-                        throw new Error("Bad response from server");
-                    }
                     return response.json();
                 }).then(function (result) {
 
-                    return resolve(new returnClass(result));
+                    if (result.hasOwnProperty('error')) {
+                        return reject(result);
+                    }
+
+                    if (returnClass) return resolve(new returnClass(result));else return resolve(result);
                 }).catch(function (err) {
-                    log.warn(err);
-                    return reject(err);
+                    return reject({ code: null, error: err });
                 });
             });
         }
@@ -8627,7 +8753,108 @@ var Client = function () {
 
 exports.Client = Client;
 
-},{"./endpoints/v1/events":72,"./utils":75,"dotenv":54,"es6-promise":55,"isomorphic-fetch":56,"youarei":70}],72:[function(require,module,exports){
+},{"./endpoints/v1/accounts":73,"./endpoints/v1/events":74,"./endpoints/v1/places":75,"./endpoints/v1/users":77,"./utils":79,"dotenv":54,"es6-promise":55,"isomorphic-fetch":56,"youarei":70}],72:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}(); /*
+     
+     */
+
+var _utils = require('../utils');
+
+var _jsonschema = require('jsonschema');
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+var BaseEndpoint = function () {
+    function BaseEndpoint(client) {
+        _classCallCheck(this, BaseEndpoint);
+
+        this.client = client;
+    }
+
+    _createClass(BaseEndpoint, [{
+        key: 'build_url',
+        value: function build_url(prefix, suffix) {
+            if (this.accountId) return '/' + prefix + '/accounts/' + _utils._.trim(this.accountId, '/') + '/' + _utils._.trim(suffix, '/') + '/';else return '/' + prefix + '/' + _utils._.trim(suffix, '/') + '/';
+        }
+    }, {
+        key: 'deserializeOptions',
+        value: function deserializeOptions(options) {
+            var self = this;
+
+            return _utils._.fromPairs(_utils._.map(_utils._.toPairs(options), function (item) {
+                if (_utils._.indexOf(self.arrayOptions, item[0]) >= 0) {
+                    if (_utils._.isString(item[1])) item[1] = item[1].split(',');
+
+                    if (!_utils._.isArray(item[1])) item[1] = [item[1]];
+                }
+
+                if (_utils._.indexOf(self.integerOptions, item[0]) >= 0) {
+                    if (!_utils._.isArray(item[1])) item[1] = parseInt(item[1]);else item[1] = _utils._.map(item[1], function (x) {
+                        return parseInt(x);
+                    });
+                }
+
+                return item;
+            }));
+        }
+    }, {
+        key: 'serializeOptions',
+        value: function serializeOptions(options) {
+
+            var self = this;
+
+            return _utils._.fromPairs(_utils._.map(_utils._.toPairs(options), function (item) {
+                if (_utils._.indexOf(self.arrayOptions, item[0]) >= 0) {
+                    if (_utils._.isArray(item[1])) item[1] = item[1].join(',');
+                }
+
+                return item;
+            }));
+        }
+    }, {
+        key: 'validate',
+        value: function validate(options) {
+
+            var v = new _jsonschema.Validator();
+
+            var _options = this.deserializeOptions(options);
+
+            return v.validate(_options, this.schema);
+        }
+    }, {
+        key: 'get',
+        value: function get(version, path, returnClass, options) {
+
+            options = this.serializeOptions(options);
+
+            return this.client.get(this.build_url(version, path), returnClass, options);
+        }
+    }]);
+
+    return BaseEndpoint;
+}();
+
+exports.default = BaseEndpoint;
+
+},{"../utils":79,"jsonschema":59}],73:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -8653,6 +8880,97 @@ var _resultset = require("../../resultset");
 var _schemas = require("./schemas");
 
 var _jsonschema = require("jsonschema");
+
+var _base = require("../base");
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+} /*
+  
+  */
+
+var Accounts = function (_BaseEndpoint) {
+    _inherits(Accounts, _BaseEndpoint);
+
+    function Accounts() {
+        _classCallCheck(this, Accounts);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(Accounts).apply(this, arguments));
+    }
+
+    _createClass(Accounts, [{
+        key: "account",
+        value: function account() {
+            var user = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+
+            return this.client.get("/v1/accounts/" + user + "/");
+        }
+    }, {
+        key: "subscriptions",
+        value: function subscriptions() {
+            var user = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+
+            return this.client.get("/v1/accounts/" + user + "/subscriptions/");
+        }
+    }]);
+
+    return Accounts;
+}(_base2.default);
+
+exports.default = Accounts;
+
+},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76,"jsonschema":59}],74:[function(require,module,exports){
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _utils = require("../../utils");
+
+var _resultset = require("../../resultset");
+
+var _schemas = require("./schemas");
+
+var _base = require("../base");
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
 
 function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -8686,47 +9004,36 @@ var EventResultSet = function (_ResultSet) {
     return EventResultSet;
 }(_resultset.ResultSet);
 
-var Events = function () {
-    function Events(client) {
+var CalendarResultSet = function (_ResultSet2) {
+    _inherits(CalendarResultSet, _ResultSet2);
+
+    function CalendarResultSet() {
+        _classCallCheck(this, CalendarResultSet);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(CalendarResultSet).apply(this, arguments));
+    }
+
+    return CalendarResultSet;
+}(_resultset.ResultSet);
+
+var Events = function (_BaseEndpoint) {
+    _inherits(Events, _BaseEndpoint);
+
+    function Events(client, accountId) {
         _classCallCheck(this, Events);
 
-        this.client = client;
-        this.schema = _schemas.EventSchema;
-        this.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'within', 'country'];
-        this.integerOptions = ['limit', 'offset', 'rank_level'];
+        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(Events).call(this, client));
+
+        _this3.schema = _schemas.EventSchema;
+        _this3.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'within', 'country'];
+        _this3.integerOptions = ['limit', 'offset', 'rank_level'];
+
+        _this3.accountId = accountId;
+
+        return _this3;
     }
 
     _createClass(Events, [{
-        key: "parseOptions",
-        value: function parseOptions(options, arrayOptions, integerOptions) {
-
-            return _utils._.fromPairs(_utils._.map(_utils._.toPairs(options), function (item) {
-                if (_utils._.indexOf(arrayOptions, item[0]) >= 0) {
-                    if (typeof item[1] === 'string') item[1] = item[1].split(',');
-
-                    if (!_utils._.isArray(item[1])) item[1] = [item[1]];
-                }
-
-                if (_utils._.indexOf(integerOptions, item[0]) >= 0) {
-                    if (!_utils._.isArray(item[1])) item[1] = parseInt(item[1]);else item[1] = _utils._.map(item[1], function (x) {
-                        return parseInt(x);
-                    });
-                }
-
-                return item;
-            }));
-        }
-    }, {
-        key: "validate",
-        value: function validate(options) {
-
-            var v = new _jsonschema.Validator();
-
-            var _options = this.parseOptions(options, this.arrayOptions, this.integerOptions);
-
-            return v.validate(_options, this.schema);
-        }
-    }, {
         key: "search",
         value: function search(options) {
 
@@ -8742,31 +9049,36 @@ var Events = function () {
                 return reject(validate.errors[0]);
             });
         }
+    }, {
+        key: "calendar",
+        value: function calendar(options) {
+
+            options = options || {};
+
+            var validate = this.validate(options);
+
+            if (validate.valid) return this.client.get(this.build_url('v1', '/events/calendar/'), CalendarResultSet, options);
+
+            return new Promise(function (resolve, reject) {
+                return reject(validate.errors[0]);
+            });
+        }
+    }, {
+        key: "for_account",
+        value: function for_account(id) {
+            return new Events(this.client, id);
+        }
     }]);
 
     return Events;
-}();
+}(_base2.default);
 
 exports.default = Events;
 
-},{"../../resultset":74,"../../utils":75,"./schemas":73,"jsonschema":59}],73:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-/*
-    Statically load schemas, this ensure it's compiled for browser correctly
-*/
-
-// Must use require (using import breaks brfs)
-
-var EventSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Event Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"label\": {\n      \"type\": \"array\"\n    },\n    \"within\": {\n      \"type\": \"string\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"start.tz\": {\n      \"type\": \"string\"\n    },\n    \"start.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.tz\": {\n      \"type\": \"string\"\n    },\n    \"end.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 10,\n      \"maximum\": 200\n    },\n    \"offset\": {\n      \"type\": \"integer\",\n      \"minimum\": 10\n    },\n    \"rank_level\": {\n      \"items\": {\n        \"enum\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"category\": {\n      \"items\": {\n        \"enum\": [\n          \"school-holidays\",\n          \"public-holidays\",\n          \"observances\",\n          \"concerts\",\n          \"conferences\",\n          \"expos\",\n          \"festivals\",\n          \"performing-arts\",\n          \"sports\",\n          \"daylight-savings\",\n          \"airport-delays\",\n          \"severe-weather\",\n          \"disasters\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
-
-exports.EventSchema = EventSchema;
-
-},{}],74:[function(require,module,exports){
+},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76}],75:[function(require,module,exports){
 "use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -8782,15 +9094,230 @@ var _createClass = function () {
     };
 }();
 
+var _utils = require("../../utils");
+
+var _resultset = require("../../resultset");
+
+var _schemas = require("./schemas");
+
+var _base = require("../base");
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
 function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
         throw new TypeError("Cannot call a class as a function");
     }
 }
 
-/*
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
 
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+} /*
+  
+  */
+
+var PlaceResultSet = function (_ResultSet) {
+    _inherits(PlaceResultSet, _ResultSet);
+
+    function PlaceResultSet() {
+        _classCallCheck(this, PlaceResultSet);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(PlaceResultSet).apply(this, arguments));
+    }
+
+    return PlaceResultSet;
+}(_resultset.ResultSet);
+
+var Places = function (_BaseEndpoint) {
+    _inherits(Places, _BaseEndpoint);
+
+    function Places(client) {
+        _classCallCheck(this, Places);
+
+        var _this2 = _possibleConstructorReturn(this, Object.getPrototypeOf(Places).call(this, client));
+
+        _this2.schema = _schemas.PlaceSchema;
+        _this2.arrayOptions = ['id', 'country', 'type'];
+        _this2.integerOptions = ['limit'];
+
+        return _this2;
+    }
+
+    _createClass(Places, [{
+        key: "search",
+        value: function search(options) {
+            options = options || {};
+
+            var validate = this.validate(options);
+
+            if (validate.valid) return this.get('v1', '/places/', PlaceResultSet, options);
+
+            return new Promise(function (resolve, reject) {
+                return reject(validate.errors[0]);
+            });
+        }
+    }]);
+
+    return Places;
+}(_base2.default);
+
+exports.default = Places;
+
+},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76}],76:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+/*
+    Statically load schemas, this ensure it's compiled for browser correctly
 */
+
+// Must use require (using import breaks brfs)
+
+var EventSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Event Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"label\": {\n      \"type\": \"array\"\n    },\n    \"within\": {\n      \"type\": \"string\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"start.tz\": {\n      \"type\": \"string\"\n    },\n    \"start.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.tz\": {\n      \"type\": \"string\"\n    },\n    \"end.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.tz\": {\n      \"type\": \"string\"\n    },\n    \"active.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 10,\n      \"maximum\": 200\n    },\n    \"top_events.limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 10\n    },\n    \"offset\": {\n      \"type\": \"integer\",\n      \"minimum\": 10\n    },\n    \"rank_level\": {\n      \"items\": {\n        \"enum\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"top_events.sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"category\": {\n      \"items\": {\n        \"enum\": [\n          \"school-holidays\",\n          \"public-holidays\",\n          \"observances\",\n          \"concerts\",\n          \"conferences\",\n          \"expos\",\n          \"festivals\",\n          \"performing-arts\",\n          \"sports\",\n          \"daylight-savings\",\n          \"airport-delays\",\n          \"severe-weather\",\n          \"disasters\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
+
+var PlaceSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Place Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 10,\n      \"maximum\": 200\n    },\n    \"type\": {\n      \"items\": {\n        \"enum\": [\n          \"neighbourhood\",\n          \"locality\",\n          \"localadmin\",\n          \"county\",\n          \"region\",\n          \"country\",\n          \"continent\",\n          \"country\",\n          \"planet\",\n          \"local\",\n          \"metro\",\n          \"major\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
+
+exports.EventSchema = EventSchema;
+exports.PlaceSchema = PlaceSchema;
+
+},{}],77:[function(require,module,exports){
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _utils = require("../../utils");
+
+var _resultset = require("../../resultset");
+
+var _schemas = require("./schemas");
+
+var _jsonschema = require("jsonschema");
+
+var _base = require("../base");
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+} /*
+  
+  */
+
+var MembershipResultSet = function (_ResultSet) {
+    _inherits(MembershipResultSet, _ResultSet);
+
+    function MembershipResultSet() {
+        _classCallCheck(this, MembershipResultSet);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(MembershipResultSet).apply(this, arguments));
+    }
+
+    return MembershipResultSet;
+}(_resultset.ResultSet);
+
+var Users = function (_BaseEndpoint) {
+    _inherits(Users, _BaseEndpoint);
+
+    function Users() {
+        _classCallCheck(this, Users);
+
+        return _possibleConstructorReturn(this, Object.getPrototypeOf(Users).apply(this, arguments));
+    }
+
+    _createClass(Users, [{
+        key: "user",
+        value: function user() {
+            var _user = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+
+            return this.client.get("/v1/users/" + _user + "/");
+        }
+    }, {
+        key: "memberships",
+        value: function memberships() {
+            var user = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+
+            return this.client.get("/v1/users/" + user + "/memberships/", MembershipResultSet);
+        }
+    }]);
+
+    return Users;
+}(_base2.default);
+
+exports.default = Users;
+
+},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76,"jsonschema":59}],78:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.ResultSet = undefined;
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}(); /*
+     
+     */
+
+require("core-js/es6/symbol");
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
 
 var ResultSet = function () {
     function ResultSet(result) {
@@ -8823,7 +9350,7 @@ var ResultSet = function () {
 
 exports.ResultSet = ResultSet;
 
-},{}],75:[function(require,module,exports){
+},{"core-js/es6/symbol":4}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -8867,8 +9394,10 @@ _.mixin;
 _.fromPairs;
 _.indexOf;
 _.isArray;
+_.isString;
 _.map;
 _.toPairs;
+_.trim;
 
 exports.logger = _loglevel2.default;
 

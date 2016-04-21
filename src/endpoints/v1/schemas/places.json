@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "title": "Place Search Schema",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "q": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "country": {
+      "type": "array"
+    },
+    "limit": {
+      "type": "integer",
+      "minimum": 10,
+      "maximum": 200
+    },
+    "type": {
+      "items": {
+        "enum": [
+          "neighbourhood",
+          "locality",
+          "localadmin",
+          "county",
+          "region",
+          "country",
+          "continent",
+          "country",
+          "planet",
+          "local",
+          "metro",
+          "major"
+        ]
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+
+  ]
+}

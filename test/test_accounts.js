@@ -13,8 +13,8 @@ import Client from '../index'
 // Logging Levels
 logger.getLogger("predicthq.client").setLevel('DEBUG')
 
-
 let access_token = process.env.ACCESS_TOKEN
+let test_user_id = process.env.TEST_USER_ID
 
 describe('Accounts', () => {
 

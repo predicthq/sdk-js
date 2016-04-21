@@ -1,6 +1,7 @@
 import {_, logger} from "./utils"
 
 import Events from "./endpoints/v1/events"
+import Places from "./endpoints/v1/places"
 import Users from "./endpoints/v1/users"
 import Accounts from "./endpoints/v1/accounts"
 
@@ -28,6 +29,7 @@ class Client {
         this.options = options
 
         this.events = new Events(this)
+        this.places = new Places(this)
         this.users = new Users(this)
         this.accounts = new Accounts(this)
 
@@ -43,6 +45,8 @@ class Client {
 
         return new Promise((resolve, reject) => {
 
+            log.debug(uri.to_string())
+
             fetch(uri.to_string(), {
                 method: method,
                 headers: {
@@ -50,7 +54,7 @@ class Client {
                     'Accept': 'application/json'
                 }
             }).then(function(response) {
-                    return response.json();
+                    return response.json()
                 })
                 .then(function(result) {
 
@@ -66,7 +70,7 @@ class Client {
                 })
                 .catch(function(err) {
                     return reject({code:null, error: err})
-                });
+                })
         })
 
     }
