@@ -1,6 +1,6 @@
 {
   "name": "predicthq",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "PredictHQ Event Intelligence",
   "main": "index.js",
   "scripts": {
