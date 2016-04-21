@@ -48,7 +48,7 @@
 
 * Client.events
 * Client.accounts
-
+* Client.places
 
 
 
