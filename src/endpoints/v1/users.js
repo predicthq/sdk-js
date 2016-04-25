@@ -18,11 +18,11 @@ class MembershipResultSet extends ResultSet { }
 class Users extends BaseEndpoint {
 
     user(user = 'self'){
-        return this.client.get(`/v1/users/${user}/`)
+        return this.get('v1', `/users/${user}/`)
     }
 
     memberships(user = 'self'){
-        return this.client.get(`/v1/users/${user}/memberships/`, MembershipResultSet)
+        return this.get('v1', `/users/${user}/memberships/`, MembershipResultSet)
     }
 
 }
