@@ -35,7 +35,7 @@ class Events extends BaseEndpoint {
         let validate = this.validate(options)
 
         if (validate.valid) {
-            return this.client.get('/v1/events/', EventResultSet, options)
+            return this.client.get(this.build_url('v1', '/events/'), EventResultSet, options)
         }
 
         return new Promise((resolve, reject) => {
