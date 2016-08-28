@@ -26,6 +26,9 @@ class Client {
 
         this.baseUrl = options.endpoint || process.env.ENDPOINT_URL
 
+        if (typeof(this.baseUrl) == 'undefined')
+            throw "No endpoint URL set"
+
         this.options = options
 
         this.events = new Events(this)

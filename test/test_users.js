@@ -13,17 +13,15 @@ import Client from '../src/client'
 // Logging Levels
 logger.getLogger("predicthq.client").setLevel('DEBUG')
 
-
-let access_token = process.env.ACCESS_TOKEN
-let test_user_id = process.env.TEST_USER_ID
+let test_user_password_access_token = process.env.TEST_USER_PASSWORD_ACCESS_TOKEN
 
 describe('Users', () => {
 
     it('User', (done) => {
 
-        let c = new Client({ access_token : access_token})
+        let c = new Client({ access_token : test_user_password_access_token})
 
-        c.users.user(test_user_id)
+        c.users.user()
             .then((results)=>{
 
                 expect(_.has(results, 'id')).toEqual(true)
@@ -36,12 +34,12 @@ describe('Users', () => {
 
     it('Memberships', (done) => {
 
-        let c = new Client({ access_token : access_token})
+        let c = new Client({ access_token : test_user_password_access_token})
 
-        c.users.memberships(test_user_id)
+        c.users.memberships()
             .then((results)=>{
 
-                expect(results.toArray().length).toEqual(1)
+                expect(results.toArray().length).toBeGreaterThanOrEqualTo(1)
 
                 expect(_.keys(results.toArray()[0])).toEqual(['url', 'account', 'groups', 'joined_at'])
                 done()

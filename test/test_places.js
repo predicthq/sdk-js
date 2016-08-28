@@ -15,12 +15,12 @@ import Client from '../src/client'
 logger.getLogger("predicthq.client").setLevel('DEBUG')
 
 
-let access_token = process.env.ACCESS_TOKEN
+let test_user_password_access_token = process.env.TEST_USER_PASSWORD_ACCESS_TOKEN
 
 describe('Places', () => {
     it('Search', (done) => {
 
-    let c = new Client({ access_token : access_token})
+    let c = new Client({ access_token : test_user_password_access_token})
 
     c.places.search({country : ['NZ','AU']})
         .then((results)=>{

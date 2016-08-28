@@ -15,12 +15,12 @@ import BaseEndpoint from "../base"
 
 class Accounts extends BaseEndpoint {
 
-    account(user = 'self'){
-        return this.client.get(`/v1/accounts/${user}/`)
+    account(account = 'self'){
+        return this.client.get(`/v1/accounts/${account}/`)
     }
 
-    subscriptions(user = 'self'){
-        return this.client.get(`/v1/accounts/${user}/subscriptions/`)
+    subscriptions(account = 'self'){
+        return this.client.get(`/v1/accounts/${account}/subscriptions/`)
     }
 
 }

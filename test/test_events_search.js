@@ -15,14 +15,15 @@ import Client from '../src/client'
 // Logging Levels
 logger.getLogger("predicthq.client").setLevel('DEBUG')
 
-
-let access_token = process.env.ACCESS_TOKEN
 let test_account_id = process.env.TEST_ACCOUNT_ID
+let test_user_password_access_token = process.env.TEST_USER_PASSWORD_ACCESS_TOKEN
+let test_client_credentials_access_token = process.env.TEST_CLIENT_CREDENTIALS_ACCESS_TOKEN
+
 
 describe('Events', () => {
     it('Search', (done) => {
 
-    let c = new Client({ access_token : access_token})
+    let c = new Client({ access_token : test_client_credentials_access_token})
 
     c.events.search()
         .then((results)=>{
@@ -50,7 +51,7 @@ describe('Events', () => {
 
     it('Search using account', (done) => {
 
-    let c = new Client({ access_token : access_token})
+    let c = new Client({ access_token : test_user_password_access_token})
 
     c.events.for_account(test_account_id).search()
         .then((results)=>{
@@ -66,7 +67,7 @@ describe('Events', () => {
 
     it('Calendar', (done) => {
 
-    let c = new Client({ access_token : access_token})
+    let c = new Client({ access_token : test_client_credentials_access_token})
 
      let options = {
          'active.gte' : '2016-01-01',
@@ -90,7 +91,7 @@ describe('Events', () => {
 
    it('Calendar using Account', (done) => {
 
-    let c = new Client({ access_token : access_token})
+    let c = new Client({ access_token : test_user_password_access_token})
 
      let options = {
          'active.gte' : '2016-01-01',
