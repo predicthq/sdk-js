@@ -1,6 +1,6 @@
 {
   "name": "predicthq",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "PredictHQ Event Intelligence",
   "main": "dist/predicthq.js",
   "scripts": {
@@ -75,6 +75,6 @@
     "uglify-js": "2.7.3"
   },
   "node6BrowserTestingDependencies": {
-     "mocha-phantomjs": "4.1.0"
+    "mocha-phantomjs": "4.1.0"
   }
 }
