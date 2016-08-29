@@ -6,7 +6,7 @@
   "scripts": {
     "lint": " node node_modules/eslint/bin/eslint.js  ./src/",
     "test": "NODE_ENV=test node_modules/mocha/bin/mocha --require babel-core/register test",
-    "test_browser": "ACCESS_TOKEN=$(node -r dotenv/config -e 'console.log(process.env.ACCESS_TOKEN)'); ENDPOINT_URL=$(node -r dotenv/config -e 'console.log(process.env.ENDPOINT_URL)'); node_modules/mocha-phantomjs/bin/mocha-phantomjs --web-security no -b -R dot test/browser/runner.html?endpoint=${ENDPOINT_URL}\\&token=${ACCESS_TOKEN}",
+    "test_browser": "ACCESS_TOKEN=$(node -r dotenv/config -e 'console.log(process.env.TEST_USER_PASSWORD_ACCESS_TOKEN)'); ENDPOINT_URL=$(node -r dotenv/config -e 'console.log(process.env.ENDPOINT_URL)'); node_modules/mocha-phantomjs/bin/mocha-phantomjs --web-security no -b -R dot test/browser/runner.html?endpoint=${ENDPOINT_URL}\\&token=${ACCESS_TOKEN}",
     "update": "node node_modules/npm-check-updates/bin/npm-check-updates --upgradeAll",
     "build": "NODE_ENV=production node node_modules/browserify/bin/cmd.js src/client.js -t babelify | node_modules/uglify-js/bin/uglifyjs -o dist/predicthq.js; node build.js",
     "list_lodash_methods": "node_modules/lodash-modularize/bin/lodash-modularize src/**/**/*.js --list -g _",
