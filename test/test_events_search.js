@@ -1,8 +1,5 @@
 /*
- Tests
-
-    TODO: //{q:"Foo Fighters", rank_level:[4, 5], country:'US'})
-
+    Tests
  */
 
 import _ from "lodash"
@@ -21,95 +18,114 @@ let test_client_credentials_access_token = process.env.TEST_CLIENT_CREDENTIALS_A
 
 
 describe('Events', () => {
+
     it('Search', (done) => {
 
-    let c = new Client({ access_token : test_client_credentials_access_token})
+        let c = new Client({access_token: test_client_credentials_access_token})
 
-    c.events.search()
-        .then((results)=>{
+        c.events.search()
+            .then((results)=> {
 
-            // default limit 10 records
-            expect(results.toArray().length).toEqual(10)
+                // default limit 10 records
+                expect(results.toArray().length).toEqual(10)
 
-            // Check for known field
-            let keys = _.keys(results.toArray()[0])
-            expect(keys).toContain('id')
+                // Check for known field
+                let keys = _.keys(results.toArray()[0])
+                expect(keys).toContain('id')
 
-            // Check iterator
-            let events = []
-            for (let event of results){
-                events.push(event)
+                // Check iterator
+                let events = []
+                for (let event of results) {
+                    events.push(event)
+                }
+
+                expect(events.length).toEqual(10)
+
+                done()
+
+            }).catch(done)
+
+    }),
+
+        it('Search - with filter', (done) => {
+
+            let c = new Client({access_token: test_client_credentials_access_token})
+
+            // singapore
+            c.events.search({q:'Macklemore', rank_level:[4,5], 'place.scope':['1880251'],
+                'start.gte': '2016-09-20', 'start.lt': '2016-09-21', 'start.tz': 'Asia/Singapore'})
+                .then((results)=> {
+
+                    // Expect one record
+                    expect(results.toArray().length).toEqual(1)
+
+                    done()
+
+                }).catch(done)
+
+        }),
+
+        it('Search using account', (done) => {
+
+            let c = new Client({access_token: test_user_password_access_token})
+
+            c.events.for_account(test_account_id).search()
+                .then((results)=> {
+
+                    // default limit 10 records
+                    expect(results.toArray().length).toEqual(10)
+
+                    done()
+
+                }).catch(done)
+
+        }),
+
+        it('Calendar', (done) => {
+
+            let c = new Client({access_token: test_client_credentials_access_token})
+
+            let options = {
+                'active.gte': '2016-01-01',
+                'active.lte': '2016-01-03',
+                'country': 'CA',
+                'top_events.limit': 1,
+                'top_events.sort': ['rank']
             }
 
-            expect(events.length).toEqual(10)
+            c.events.calendar(options)
+                .then((results)=> {
 
-            done()
+                    let days = _.keyBy(results.toArray(), 'date')
+                    expect(_.keys(days)).toEqual(['2016-01-01', '2016-01-02', '2016-01-03'])
 
-        }).catch(done)
+                    done()
 
-    }),
+                }).catch(done)
 
-    it('Search using account', (done) => {
+        })
 
-    let c = new Client({ access_token : test_user_password_access_token})
+    it('Calendar using Account', (done) => {
 
-    c.events.for_account(test_account_id).search()
-        .then((results)=>{
+        let c = new Client({access_token: test_user_password_access_token})
 
-            // default limit 10 records
-            expect(results.toArray().length).toEqual(10)
+        let options = {
+            'active.gte': '2016-01-01',
+            'active.lte': '2016-01-03',
+            'country': 'CA',
+            'top_events.limit': 1,
+            'top_events.sort': ['rank']
+        }
 
-            done()
+        c.events.for_account(test_account_id).calendar(options)
+            .then((results)=> {
 
-        }).catch(done)
+                let days = _.keyBy(results.toArray(), 'date')
+                expect(_.keys(days)).toEqual(['2016-01-01', '2016-01-02', '2016-01-03'])
 
-    }),
+                done()
 
-    it('Calendar', (done) => {
-
-    let c = new Client({ access_token : test_client_credentials_access_token})
-
-     let options = {
-         'active.gte' : '2016-01-01',
-         'active.lte' : '2016-01-03',
-         'country' : 'CA',
-         'top_events.limit' : 1,
-         'top_events.sort' : ['rank']
-     }
-
-    c.events.calendar(options)
-        .then((results)=>{
-
-            let days = _.keyBy(results.toArray(),'date')
-            expect(_.keys(days)).toEqual(['2016-01-01','2016-01-02','2016-01-03'])
-
-            done()
-
-        }).catch(done)
-
-    })
-
-   it('Calendar using Account', (done) => {
-
-    let c = new Client({ access_token : test_user_password_access_token})
-
-     let options = {
-         'active.gte' : '2016-01-01',
-         'active.lte' : '2016-01-03',
-         'country' : 'CA',
-         'top_events.limit' : 1,
-         'top_events.sort' : ['rank']
-     }
-
-    c.events.for_account(test_account_id).calendar(options)
-        .then((results)=>{
-
-            let days = _.keyBy(results.toArray(),'date')
-            expect(_.keys(days)).toEqual(['2016-01-01','2016-01-02','2016-01-03'])
-
-            done()
-
-        }).catch(done)
+            }).catch(done)
 
     })
 
