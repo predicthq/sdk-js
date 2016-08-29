@@ -12,6 +12,7 @@ import BaseEndpoint from "../base"
 
 class EventResultSet extends ResultSet { }
 class CalendarResultSet extends ResultSet { }
+class SavedSearchResultSet extends ResultSet { }
 
 class Events extends BaseEndpoint {
 
