@@ -18,7 +18,7 @@ let test_user_password_access_token = process.env.TEST_USER_PASSWORD_ACCESS_TOKE
 
 describe('Saved Searches', () => {
 
-    it.only('List', (done) => {
+    it.skip('List', (done) => {
 
         let c = new Client({access_token: test_user_password_access_token})
 
