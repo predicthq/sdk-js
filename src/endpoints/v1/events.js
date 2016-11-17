@@ -21,7 +21,7 @@ class Events extends BaseEndpoint {
         super(client)
 
         this.schema = EventSchema
-        this.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'within','country']
+        this.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'country']
         this.integerOptions = ['limit', 'offset', 'rank_level']
 
         this.accountId = accountId

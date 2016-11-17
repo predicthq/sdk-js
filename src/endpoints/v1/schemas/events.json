@@ -14,7 +14,8 @@
       "type": "array"
     },
     "within": {
-      "type": "string"
+      "type": "string",
+      "pattern": "(\\d+(mm|cm|m|km|in|yd|ft|mi|nmi))@([\\-\\+]?\\d+(\\.\\d+)?),([\\-\\+]?\\d+(\\.\\d+)?)"
     },
     "country": {
       "type": "array"
