@@ -13,11 +13,11 @@
     
 ## Usage
 
-    var Client = require('predicthq')
+    var phq = require('predicthq')
      
-    var phq = new Client({access_token: "ACCESS_TOKEN"})
+    client = new phq.Client({access_token: "ACCESS_TOKEN"})
     
-    phq.events.search({q: 'Madonna', rank_level: 5, country:'AU', 'start.gte' : '2016-01-01'})
+    client.events.search({q: 'Madonna', rank_level: 5, country:'AU', 'start.gte' : '2016-01-01'})
         .then(function(results){
             var events = results.toArray()
             for(var i=0; i < events.length; i++)
@@ -35,9 +35,9 @@
     
     import Client from 'predicthq'
     
-    let phq = new Client({access_token=:"ACCESS_TOKEN"})
+    let client = new Client({access_token=:"ACCESS_TOKEN"})
     
-    phq.events.search()
+    client.events.search({'within': '1km@42.35996,-71.06009', 'start.gte': '2016-03-08', 'start.lt': '2016-03-09'})
         .then((results)=>{
             for (let event of results)
                 console.info(event.title)
@@ -49,21 +49,20 @@ You will need to bring your own fetch library
     
     // npm install node-fetch
     global.fetch = require('node-fetch') 
-    var Client = require('predicthq')
+    var phq = require('predicthq')
+    var client = new phq.Client({access_token: "ACCESS_TOKEN"})
     
     // or
     var fetch = require('node-fetch')
-    var Client = require('predicthq')
-    var phq = new Client({access_token: "ACCESS_TOKEN", fetch: fetch})
+    var phq = require('predicthq')
+    var client = new phq.Client({access_token: "ACCESS_TOKEN", fetch: fetch})
     
-
 
 ## Endpoints
 
-* Client.events
-* Client.accounts
-* Client.places
-
+* events
+* accounts
+* places
 
 
 For a description of all available endpoints, refer to our [API Documentation](https://developer.predicthq.com/).
