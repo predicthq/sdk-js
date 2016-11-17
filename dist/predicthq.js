@@ -18322,25 +18322,40 @@ var process = module.exports = {};
 var cachedSetTimeout;
 var cachedClearTimeout;
 
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
 (function () {
     try {
-        cachedSetTimeout = setTimeout;
-    } catch (e) {
-        cachedSetTimeout = function () {
-            throw new Error('setTimeout is not defined');
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
         }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
     }
     try {
-        cachedClearTimeout = clearTimeout;
-    } catch (e) {
-        cachedClearTimeout = function () {
-            throw new Error('clearTimeout is not defined');
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
         }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
     }
 } ())
 function runTimeout(fun) {
     if (cachedSetTimeout === setTimeout) {
         //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
         return setTimeout(fun, 0);
     }
     try {
@@ -18361,6 +18376,11 @@ function runTimeout(fun) {
 function runClearTimeout(marker) {
     if (cachedClearTimeout === clearTimeout) {
         //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
         return clearTimeout(marker);
     }
     try {
@@ -20402,6 +20422,10 @@ var _events = require("./endpoints/v1/events");
 
 var _events2 = _interopRequireDefault(_events);
 
+var _searches = require("./endpoints/v1/searches");
+
+var _searches2 = _interopRequireDefault(_searches);
+
 var _places = require("./endpoints/v1/places");
 
 var _places2 = _interopRequireDefault(_places);
@@ -20457,6 +20481,7 @@ var Client = function () {
         this.options = options;
 
         this.events = new _events2.default(this);
+        this.searches = new _searches2.default(this);
         this.places = new _places2.default(this);
         this.users = new _users2.default(this);
         this.accounts = new _accounts2.default(this);
@@ -20524,7 +20549,7 @@ exports.default = Client;
 exports.Client = Client;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./endpoints/v1/accounts":73,"./endpoints/v1/events":74,"./endpoints/v1/places":75,"./endpoints/v1/users":77,"./utils":79,"dotenv":55,"es6-promise":56,"whatwg-fetch":69,"youarei":70}],72:[function(require,module,exports){
+},{"./endpoints/v1/accounts":73,"./endpoints/v1/events":74,"./endpoints/v1/places":75,"./endpoints/v1/searches":77,"./endpoints/v1/users":78,"./utils":80,"dotenv":55,"es6-promise":56,"whatwg-fetch":69,"youarei":70}],72:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20625,7 +20650,7 @@ var BaseEndpoint = function () {
 
 exports.default = BaseEndpoint;
 
-},{"../utils":79,"jsonschema":59}],73:[function(require,module,exports){
+},{"../utils":80,"jsonschema":59}],73:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -20710,7 +20735,7 @@ var Accounts = function (_BaseEndpoint) {
 
 exports.default = Accounts;
 
-},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76,"jsonschema":59}],74:[function(require,module,exports){
+},{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76,"jsonschema":59}],74:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -20787,21 +20812,33 @@ var CalendarResultSet = function (_ResultSet2) {
     return CalendarResultSet;
 }(_resultset.ResultSet);
 
+var SavedSearchResultSet = function (_ResultSet3) {
+    _inherits(SavedSearchResultSet, _ResultSet3);
+
+    function SavedSearchResultSet() {
+        _classCallCheck(this, SavedSearchResultSet);
+
+        return _possibleConstructorReturn(this, (SavedSearchResultSet.__proto__ || Object.getPrototypeOf(SavedSearchResultSet)).apply(this, arguments));
+    }
+
+    return SavedSearchResultSet;
+}(_resultset.ResultSet);
+
 var Events = function (_BaseEndpoint) {
     _inherits(Events, _BaseEndpoint);
 
     function Events(client, accountId) {
         _classCallCheck(this, Events);
 
-        var _this3 = _possibleConstructorReturn(this, (Events.__proto__ || Object.getPrototypeOf(Events)).call(this, client));
+        var _this4 = _possibleConstructorReturn(this, (Events.__proto__ || Object.getPrototypeOf(Events)).call(this, client));
 
-        _this3.schema = _schemas.EventSchema;
-        _this3.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'within', 'country'];
-        _this3.integerOptions = ['limit', 'offset', 'rank_level'];
+        _this4.schema = _schemas.EventSchema;
+        _this4.arrayOptions = ['category', 'sort', 'rank_level', 'label', 'country'];
+        _this4.integerOptions = ['limit', 'offset', 'rank_level'];
 
-        _this3.accountId = accountId;
+        _this4.accountId = accountId;
 
-        return _this3;
+        return _this4;
     }
 
     _createClass(Events, [{
@@ -20813,7 +20850,7 @@ var Events = function (_BaseEndpoint) {
             var validate = this.validate(options);
 
             if (validate.valid) {
-                return this.client.get(this.build_url('v1', '/events/'), EventResultSet, options);
+                return this.get('v1', '/events/', EventResultSet, options);
             }
 
             return new Promise(function (resolve, reject) {
@@ -20828,15 +20865,12 @@ var Events = function (_BaseEndpoint) {
 
             var validate = this.validate(options);
 
-            if (validate.valid) return this.client.get(this.build_url('v1', '/events/calendar/'), CalendarResultSet, options);
+            if (validate.valid) return this.get('v1', '/events/calendar/', CalendarResultSet, options);
 
             return new Promise(function (resolve, reject) {
                 return reject(validate.errors[0]);
             });
         }
-    }, {
-        key: "saved",
-        value: function saved(Options) {}
     }, {
         key: "for_account",
         value: function for_account(id) {
@@ -20849,7 +20883,7 @@ var Events = function (_BaseEndpoint) {
 
 exports.default = Events;
 
-},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76}],75:[function(require,module,exports){
+},{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76}],75:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -20949,7 +20983,7 @@ var Places = function (_BaseEndpoint) {
 
 exports.default = Places;
 
-},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76}],76:[function(require,module,exports){
+},{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76}],76:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20962,7 +20996,7 @@ Object.defineProperty(exports, "__esModule", {
 // Must use require (using import breaks brfs)
 
 
-var EventSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Event Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"label\": {\n      \"type\": \"array\"\n    },\n    \"within\": {\n      \"type\": \"string\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"start.tz\": {\n      \"type\": \"string\"\n    },\n    \"start.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.tz\": {\n      \"type\": \"string\"\n    },\n    \"end.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.tz\": {\n      \"type\": \"string\"\n    },\n    \"active.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 10,\n      \"maximum\": 200\n    },\n    \"top_events.limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 10\n    },\n    \"offset\": {\n      \"type\": \"integer\",\n      \"minimum\": 10\n    },\n    \"rank_level\": {\n      \"items\": {\n        \"enum\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"top_events.sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"category\": {\n      \"items\": {\n        \"enum\": [\n          \"school-holidays\",\n          \"public-holidays\",\n          \"observances\",\n          \"concerts\",\n          \"conferences\",\n          \"expos\",\n          \"festivals\",\n          \"performing-arts\",\n          \"sports\",\n          \"daylight-savings\",\n          \"airport-delays\",\n          \"severe-weather\",\n          \"disasters\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
+var EventSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Event Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"label\": {\n      \"type\": \"array\"\n    },\n    \"within\": {\n      \"type\": \"string\",\n      \"pattern\": \"(\\\\d+(mm|cm|m|km|in|yd|ft|mi|nmi))@([\\\\-\\\\+]?\\\\d+(\\\\.\\\\d+)?),([\\\\-\\\\+]?\\\\d+(\\\\.\\\\d+)?)\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"start.tz\": {\n      \"type\": \"string\"\n    },\n    \"start.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.tz\": {\n      \"type\": \"string\"\n    },\n    \"end.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.tz\": {\n      \"type\": \"string\"\n    },\n    \"active.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"place.scope\": {\n      \"type\": \"array\"\n    },\n    \"place.exact\": {\n      \"type\": \"array\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 10,\n      \"maximum\": 200\n    },\n    \"top_events.limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 10\n    },\n    \"offset\": {\n      \"type\": \"integer\",\n      \"minimum\": 10\n    },\n    \"rank_level\": {\n      \"items\": {\n        \"enum\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"top_events.sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"category\": {\n      \"items\": {\n        \"enum\": [\n          \"school-holidays\",\n          \"public-holidays\",\n          \"observances\",\n          \"concerts\",\n          \"conferences\",\n          \"expos\",\n          \"festivals\",\n          \"performing-arts\",\n          \"sports\",\n          \"daylight-savings\",\n          \"airport-delays\",\n          \"severe-weather\",\n          \"disasters\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
 
 var PlaceSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Place Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 10,\n      \"maximum\": 200\n    },\n    \"type\": {\n      \"items\": {\n        \"enum\": [\n          \"neighbourhood\",\n          \"locality\",\n          \"localadmin\",\n          \"county\",\n          \"region\",\n          \"country\",\n          \"continent\",\n          \"country\",\n          \"planet\",\n          \"local\",\n          \"metro\",\n          \"major\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
 
@@ -20970,6 +21004,103 @@ exports.EventSchema = EventSchema;
 exports.PlaceSchema = PlaceSchema;
 
 },{}],77:[function(require,module,exports){
+"use strict";
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () {
+    function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+            var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
+        }
+    }return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
+    };
+}();
+
+var _utils = require("../../utils");
+
+var _resultset = require("../../resultset");
+
+var _schemas = require("./schemas");
+
+var _base = require("../base");
+
+var _base2 = _interopRequireDefault(_base);
+
+function _interopRequireDefault(obj) {
+    return obj && obj.__esModule ? obj : { default: obj };
+}
+
+function _classCallCheck(instance, Constructor) {
+    if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+    }
+}
+
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+} /*
+  
+  */
+
+var SavedSearchResultSet = function (_ResultSet) {
+    _inherits(SavedSearchResultSet, _ResultSet);
+
+    function SavedSearchResultSet() {
+        _classCallCheck(this, SavedSearchResultSet);
+
+        return _possibleConstructorReturn(this, (SavedSearchResultSet.__proto__ || Object.getPrototypeOf(SavedSearchResultSet)).apply(this, arguments));
+    }
+
+    return SavedSearchResultSet;
+}(_resultset.ResultSet);
+
+var Searches = function (_BaseEndpoint) {
+    _inherits(Searches, _BaseEndpoint);
+
+    function Searches(client, accountId) {
+        _classCallCheck(this, Searches);
+
+        var _this2 = _possibleConstructorReturn(this, (Searches.__proto__ || Object.getPrototypeOf(Searches)).call(this, client));
+
+        _this2.accountId = accountId;
+        return _this2;
+    }
+
+    _createClass(Searches, [{
+        key: "list",
+        value: function list(options) {
+
+            options = options || {};
+
+            return this.get('v1', '/members/self/events/searches/', SavedSearchResultSet, options);
+        }
+    }, {
+        key: "for_account",
+        value: function for_account(id) {
+            return new Searches(this.client, id);
+        }
+    }]);
+
+    return Searches;
+}(_base2.default);
+
+exports.default = Searches;
+
+},{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76}],78:[function(require,module,exports){
 "use strict";
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
@@ -21066,7 +21197,7 @@ var Users = function (_BaseEndpoint) {
 
 exports.default = Users;
 
-},{"../../resultset":78,"../../utils":79,"../base":72,"./schemas":76,"jsonschema":59}],78:[function(require,module,exports){
+},{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76,"jsonschema":59}],79:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21125,7 +21256,7 @@ var ResultSet = function () {
 
 exports.ResultSet = ResultSet;
 
-},{"core-js/es6/symbol":3}],79:[function(require,module,exports){
+},{"core-js/es6/symbol":3}],80:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
