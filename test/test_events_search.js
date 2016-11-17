@@ -67,7 +67,7 @@ describe('Events', () => {
 
     }),
 
-    it.only('Search - with within filter', (done) => {
+    it('Search - with within filter', (done) => {
 
         let c = new Client({access_token: test_client_credentials_access_token})
 
