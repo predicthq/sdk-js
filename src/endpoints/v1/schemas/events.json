@@ -174,7 +174,9 @@
           "daylight-savings",
           "airport-delays",
           "severe-weather",
-          "disasters"
+          "disasters",
+          "community",
+          "terror"
         ]
       },
       "type": "array"
