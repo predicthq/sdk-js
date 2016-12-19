@@ -67,6 +67,32 @@ describe('Events', () => {
 
     }),
 
+    it('Search - scope filter', (done) => {
+
+        let c = new Client({access_token: test_client_credentials_access_token})
+
+        // singapore
+        c.events.search({
+            q: 'Green Bay', rank_level: [5], 'place.scope': ['5244267', '4887398'],
+            'start.gte': '2016-12-10', 'start.lt': '2016-12-20', 'category':'sports', 'sort': 'start'
+        })
+            .then((results)=> {
+
+                // Expect two record
+                expect(results.toArray().length).toEqual(2)
+
+                // Green Bay Packers vs Seattle Seahawks - NFL (11th Dec)
+                expect(results.toArray()[0]['id']).toEqual('3zKXK58r1JDg')
+
+                // Chicago Bears vs Green Bay Packers - NFL (18th Dec)
+                expect(results.toArray()[1]['id']).toEqual('2Ewb0z08VB0j')
+
+                done()
+
+            }).catch(done)
+
+    }),
+
     it('Search - with within filter', (done) => {
 
         let c = new Client({access_token: test_client_credentials_access_token})

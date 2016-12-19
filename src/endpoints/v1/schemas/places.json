@@ -8,7 +8,7 @@
       "type": "string"
     },
     "id": {
-      "type": "string"
+      "type": "array"
     },
     "country": {
       "type": "array"
