@@ -4,10 +4,18 @@
 
 import "core-js/es6/symbol"
 
-class ResultSet {
-    constructor(result){
-        this.result  = result
+class Result {
+    constructor(result) {
+        this.result = result
     }
+
+    toDict(){
+        return this.result
+    }
+}
+
+
+class ResultSet extends Result {
 
     toArray(){
         return this.result.results
@@ -25,5 +33,6 @@ class ResultSet {
 }
 
 export {
+    Result,
     ResultSet
 }
