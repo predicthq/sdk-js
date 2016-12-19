@@ -4,13 +4,14 @@
 
 import {_} from "../../utils"
 
-import {ResultSet} from "../../resultset"
+import {Result, ResultSet} from "../../resultset"
 
 import {EventSchema} from "./schemas"
 
 import BaseEndpoint from "../base"
 
 class EventResultSet extends ResultSet { }
+class EventCountResult extends Result { }
 class CalendarResultSet extends ResultSet { }
 class SavedSearchResultSet extends ResultSet { }
 
@@ -36,6 +37,22 @@ class Events extends BaseEndpoint {
 
         if (validate.valid) {
             return this.get('v1', '/events/', EventResultSet, options)
+        }
+
+        return new Promise((resolve, reject) => {
+            return reject(validate.errors[0])
+        })
+
+    }
+
+    count(options){
+
+        options = options || {}
+
+        let validate = this.validate(options)
+
+        if (validate.valid) {
+            return this.get('v1', '/events/count/', EventCountResult, options)
         }
 
         return new Promise((resolve, reject) => {

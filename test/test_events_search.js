@@ -117,6 +117,23 @@ describe('Events', () => {
 
     }),
 
+    it('Search - count only', (done) => {
+
+        let c = new Client({access_token: test_client_credentials_access_token})
+
+        c.events.count({'rank_level': [5], 'category': 'sports'})
+            .then((results)=> {
+
+                expect(_.keys(results.toDict())).toEqual([ 'count', 'top_rank', 'rank_levels', 'categories', 'labels' ])
+
+                expect(results.toDict()['count']).toBeGreaterThan(10000)
+
+                done()
+
+            }).catch(done)
+
+    }),
+
     it('Search using account', (done) => {
 
         let c = new Client({access_token: test_user_password_access_token})
