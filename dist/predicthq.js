@@ -22437,6 +22437,18 @@ var EventResultSet = function (_ResultSet) {
     return EventResultSet;
 }(_resultset.ResultSet);
 
+var EventCountResult = function (_Result) {
+    _inherits(EventCountResult, _Result);
+
+    function EventCountResult() {
+        _classCallCheck(this, EventCountResult);
+
+        return _possibleConstructorReturn(this, (EventCountResult.__proto__ || Object.getPrototypeOf(EventCountResult)).apply(this, arguments));
+    }
+
+    return EventCountResult;
+}(_resultset.Result);
+
 var CalendarResultSet = function (_ResultSet2) {
     _inherits(CalendarResultSet, _ResultSet2);
 
@@ -22467,15 +22479,15 @@ var Events = function (_BaseEndpoint) {
     function Events(client, accountId) {
         _classCallCheck(this, Events);
 
-        var _this4 = _possibleConstructorReturn(this, (Events.__proto__ || Object.getPrototypeOf(Events)).call(this, client));
+        var _this5 = _possibleConstructorReturn(this, (Events.__proto__ || Object.getPrototypeOf(Events)).call(this, client));
 
-        _this4.schema = _schemas.EventSchema;
-        _this4.arrayOptions = ['category', 'sort', 'top_events.sort', 'rank_level', 'label', 'country', 'place.scope', 'place.exact'];
-        _this4.integerOptions = ['limit', 'offset', 'rank_level'];
+        _this5.schema = _schemas.EventSchema;
+        _this5.arrayOptions = ['category', 'sort', 'top_events.sort', 'rank_level', 'label', 'country', 'place.scope', 'place.exact'];
+        _this5.integerOptions = ['limit', 'offset', 'rank_level'];
 
-        _this4.accountId = accountId;
+        _this5.accountId = accountId;
 
-        return _this4;
+        return _this5;
     }
 
     _createClass(Events, [{
@@ -22488,6 +22500,22 @@ var Events = function (_BaseEndpoint) {
 
             if (validate.valid) {
                 return this.get('v1', '/events/', EventResultSet, options);
+            }
+
+            return new Promise(function (resolve, reject) {
+                return reject(validate.errors[0]);
+            });
+        }
+    }, {
+        key: "count",
+        value: function count(options) {
+
+            options = options || {};
+
+            var validate = this.validate(options);
+
+            if (validate.valid) {
+                return this.get('v1', '/events/count/', EventCountResult, options);
             }
 
             return new Promise(function (resolve, reject) {
@@ -22837,10 +22865,12 @@ exports.default = Users;
 },{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76,"jsonschema":59}],79:[function(require,module,exports){
 "use strict";
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.ResultSet = undefined;
+exports.ResultSet = exports.Result = undefined;
 
 var _createClass = function () {
     function defineProperties(target, props) {
@@ -22856,17 +22886,48 @@ var _createClass = function () {
 
 require("core-js/es6/symbol");
 
+function _possibleConstructorReturn(self, call) {
+    if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+    }return call && ((typeof call === "undefined" ? "undefined" : _typeof(call)) === "object" || typeof call === "function") ? call : self;
+}
+
+function _inherits(subClass, superClass) {
+    if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
+    }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+}
+
 function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
         throw new TypeError("Cannot call a class as a function");
     }
 }
 
-var ResultSet = function () {
-    function ResultSet(result) {
-        _classCallCheck(this, ResultSet);
+var Result = function () {
+    function Result(result) {
+        _classCallCheck(this, Result);
 
         this.result = result;
+    }
+
+    _createClass(Result, [{
+        key: "toDict",
+        value: function toDict() {
+            return this.result;
+        }
+    }]);
+
+    return Result;
+}();
+
+var ResultSet = function (_Result) {
+    _inherits(ResultSet, _Result);
+
+    function ResultSet() {
+        _classCallCheck(this, ResultSet);
+
+        return _possibleConstructorReturn(this, (ResultSet.__proto__ || Object.getPrototypeOf(ResultSet)).apply(this, arguments));
     }
 
     _createClass(ResultSet, [{
@@ -22889,8 +22950,9 @@ var ResultSet = function () {
     }]);
 
     return ResultSet;
-}();
+}(Result);
 
+exports.Result = Result;
 exports.ResultSet = ResultSet;
 
 },{"core-js/es6/symbol":3}],80:[function(require,module,exports){
