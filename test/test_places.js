@@ -32,6 +32,22 @@ describe('Places', () => {
 
         }).catch(done)
 
+    }),
+
+    it('Search by IDs', (done) => {
+
+    let c = new Client({ access_token : test_user_password_access_token})
+
+    c.places.search({id : ['5128638']})
+        .then((results)=>{
+
+            expect(results.toArray().length).toEqual(1)
+            expect(results.toArray()[0].name).toEqual("State Of New York")
+
+            done()
+
+        }).catch(done)
+
     })
 
 })
