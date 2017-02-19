@@ -10,7 +10,19 @@
     "id": {
       "type": "string"
     },
+    "like": {
+      "type": "string"
+    },
     "label": {
+      "type": "array"
+    },
+    "label.op": {
+      "items": {
+        "enum": [
+          "all",
+          "any"
+        ]
+      },
       "type": "array"
     },
     "within": {
@@ -116,20 +128,24 @@
           "title",
           "start",
           "end",
+          "updated",
           "rank",
           "category",
           "duration",
           "country",
           "labels",
+          "relevance",
           "-id",
           "-title",
           "-start",
           "-end",
+          "-updated",
           "-rank",
           "-category",
           "-duration",
           "-country",
-          "-labels"
+          "-labels",
+          "-relevance"
         ]
       },
       "type": "array"
