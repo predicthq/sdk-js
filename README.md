@@ -35,7 +35,7 @@
     
     import Client from 'predicthq'
     
-    let client = new Client({access_token=:"ACCESS_TOKEN"})
+    let client = new Client({access_token="ACCESS_TOKEN"})
     
     client.events.search({'within': '1km@42.35996,-71.06009', 'start.gte': '2016-03-08', 'start.lt': '2016-03-09'})
         .then((results)=>{
