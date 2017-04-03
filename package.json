@@ -1,5 +1,5 @@
 {
-  "name": "predicthq",
+  "name": "@predicthq/predicthq",
   "version": "0.0.13",
   "description": "PredictHQ Event Intelligence",
   "main": "dist/predicthq.js",
