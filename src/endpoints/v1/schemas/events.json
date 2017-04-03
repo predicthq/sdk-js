@@ -29,6 +29,9 @@
       "type": "string",
       "pattern": "(\\d+(mm|cm|m|km|in|yd|ft|mi|nmi))@([\\-\\+]?\\d+(\\.\\d+)?),([\\-\\+]?\\d+(\\.\\d+)?)"
     },
+    "external_id": {
+      "type": "array"
+    },
     "country": {
       "type": "array"
     },
