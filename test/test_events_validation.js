@@ -58,7 +58,7 @@ describe('Event.Validation', () => {
     it('Limit - Invalid', () => {
         expect(validate({limit: 'xyz'}).valid).toNotExist()
         expect(validate({limit: 0}).valid).toNotExist()
-        expect(validate({limit: 500}).valid).toNotExist()
+        expect(validate({limit: -1}).valid).toNotExist()
     })
 
     it('Rank Level - Valid', () => {

@@ -73,7 +73,7 @@ describe('Events', () => {
 
         // singapore
         c.events.search({
-            q: 'Green Bay', rank_level: [4, 5], 'place.scope': ['5244267', '4887398'],
+            q: 'Green Bay', label: ['american-football'], rank_level: [4, 5], 'place.scope': ['5244267', '4887398'],
             'start.gte': '2016-12-10', 'start.lt': '2016-12-20', 'category':'sports', 'sort': 'start'
         })
             .then((results)=> {
