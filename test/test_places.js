@@ -42,7 +42,7 @@ describe('Places', () => {
         .then((results)=>{
 
             expect(results.toArray().length).toEqual(1)
-            expect(results.toArray()[0].name).toEqual("State Of New York")
+            expect(results.toArray()[0].name).toEqual("State of New York")
 
             done()
 
