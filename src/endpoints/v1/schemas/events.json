@@ -100,8 +100,7 @@
     },
     "limit": {
       "type": "integer",
-      "minimum": 10,
-      "maximum": 200
+      "minimum": 1
     },
     "top_events.limit": {
       "type": "integer",
@@ -110,7 +109,7 @@
     },
     "offset": {
       "type": "integer",
-      "minimum": 10
+      "minimum": 0
     },
     "rank_level": {
       "items": {
