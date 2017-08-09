@@ -2,12 +2,12 @@
 (function (global){
 'use strict';
 
-var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
   return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
 };
 
 /**
@@ -209,7 +209,7 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
       rsBreakRange = rsMathOpRange + rsNonCharRange + rsPunctuationRange + rsSpaceRange;
 
   /** Used to compose unicode capture groups. */
-  var rsApos = '[\'’]',
+  var rsApos = "['\u2019]",
       rsAstral = '[' + rsAstralRange + ']',
       rsBreak = '[' + rsBreakRange + ']',
       rsCombo = '[' + rsComboMarksRange + rsComboSymbolsRange + ']',
@@ -295,41 +295,41 @@ var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "sym
     '\xde': 'Th', '\xfe': 'th',
     '\xdf': 'ss',
     // Latin Extended-A block.
-    'Ā': 'A', 'Ă': 'A', 'Ą': 'A',
-    'ā': 'a', 'ă': 'a', 'ą': 'a',
-    'Ć': 'C', 'Ĉ': 'C', 'Ċ': 'C', 'Č': 'C',
-    'ć': 'c', 'ĉ': 'c', 'ċ': 'c', 'č': 'c',
-    'Ď': 'D', 'Đ': 'D', 'ď': 'd', 'đ': 'd',
-    'Ē': 'E', 'Ĕ': 'E', 'Ė': 'E', 'Ę': 'E', 'Ě': 'E',
-    'ē': 'e', 'ĕ': 'e', 'ė': 'e', 'ę': 'e', 'ě': 'e',
-    'Ĝ': 'G', 'Ğ': 'G', 'Ġ': 'G', 'Ģ': 'G',
-    'ĝ': 'g', 'ğ': 'g', 'ġ': 'g', 'ģ': 'g',
-    'Ĥ': 'H', 'Ħ': 'H', 'ĥ': 'h', 'ħ': 'h',
-    'Ĩ': 'I', 'Ī': 'I', 'Ĭ': 'I', 'Į': 'I', 'İ': 'I',
-    'ĩ': 'i', 'ī': 'i', 'ĭ': 'i', 'į': 'i', 'ı': 'i',
-    'Ĵ': 'J', 'ĵ': 'j',
-    'Ķ': 'K', 'ķ': 'k', 'ĸ': 'k',
-    'Ĺ': 'L', 'Ļ': 'L', 'Ľ': 'L', 'Ŀ': 'L', 'Ł': 'L',
-    'ĺ': 'l', 'ļ': 'l', 'ľ': 'l', 'ŀ': 'l', 'ł': 'l',
-    'Ń': 'N', 'Ņ': 'N', 'Ň': 'N', 'Ŋ': 'N',
-    'ń': 'n', 'ņ': 'n', 'ň': 'n', 'ŋ': 'n',
-    'Ō': 'O', 'Ŏ': 'O', 'Ő': 'O',
-    'ō': 'o', 'ŏ': 'o', 'ő': 'o',
-    'Ŕ': 'R', 'Ŗ': 'R', 'Ř': 'R',
-    'ŕ': 'r', 'ŗ': 'r', 'ř': 'r',
-    'Ś': 'S', 'Ŝ': 'S', 'Ş': 'S', 'Š': 'S',
-    'ś': 's', 'ŝ': 's', 'ş': 's', 'š': 's',
-    'Ţ': 'T', 'Ť': 'T', 'Ŧ': 'T',
-    'ţ': 't', 'ť': 't', 'ŧ': 't',
-    'Ũ': 'U', 'Ū': 'U', 'Ŭ': 'U', 'Ů': 'U', 'Ű': 'U', 'Ų': 'U',
-    'ũ': 'u', 'ū': 'u', 'ŭ': 'u', 'ů': 'u', 'ű': 'u', 'ų': 'u',
-    'Ŵ': 'W', 'ŵ': 'w',
-    'Ŷ': 'Y', 'ŷ': 'y', 'Ÿ': 'Y',
-    'Ź': 'Z', 'Ż': 'Z', 'Ž': 'Z',
-    'ź': 'z', 'ż': 'z', 'ž': 'z',
-    'Ĳ': 'IJ', 'ĳ': 'ij',
-    'Œ': 'Oe', 'œ': 'oe',
-    'ŉ': "'n", 'ſ': 'ss'
+    "\u0100": 'A', "\u0102": 'A', "\u0104": 'A',
+    "\u0101": 'a', "\u0103": 'a', "\u0105": 'a',
+    "\u0106": 'C', "\u0108": 'C', "\u010A": 'C', "\u010C": 'C',
+    "\u0107": 'c', "\u0109": 'c', "\u010B": 'c', "\u010D": 'c',
+    "\u010E": 'D', "\u0110": 'D', "\u010F": 'd', "\u0111": 'd',
+    "\u0112": 'E', "\u0114": 'E', "\u0116": 'E', "\u0118": 'E', "\u011A": 'E',
+    "\u0113": 'e', "\u0115": 'e', "\u0117": 'e', "\u0119": 'e', "\u011B": 'e',
+    "\u011C": 'G', "\u011E": 'G', "\u0120": 'G', "\u0122": 'G',
+    "\u011D": 'g', "\u011F": 'g', "\u0121": 'g', "\u0123": 'g',
+    "\u0124": 'H', "\u0126": 'H', "\u0125": 'h', "\u0127": 'h',
+    "\u0128": 'I', "\u012A": 'I', "\u012C": 'I', "\u012E": 'I', "\u0130": 'I',
+    "\u0129": 'i', "\u012B": 'i', "\u012D": 'i', "\u012F": 'i', "\u0131": 'i',
+    "\u0134": 'J', "\u0135": 'j',
+    "\u0136": 'K', "\u0137": 'k', "\u0138": 'k',
+    "\u0139": 'L', "\u013B": 'L', "\u013D": 'L', "\u013F": 'L', "\u0141": 'L',
+    "\u013A": 'l', "\u013C": 'l', "\u013E": 'l', "\u0140": 'l', "\u0142": 'l',
+    "\u0143": 'N', "\u0145": 'N', "\u0147": 'N', "\u014A": 'N',
+    "\u0144": 'n', "\u0146": 'n', "\u0148": 'n', "\u014B": 'n',
+    "\u014C": 'O', "\u014E": 'O', "\u0150": 'O',
+    "\u014D": 'o', "\u014F": 'o', "\u0151": 'o',
+    "\u0154": 'R', "\u0156": 'R', "\u0158": 'R',
+    "\u0155": 'r', "\u0157": 'r', "\u0159": 'r',
+    "\u015A": 'S', "\u015C": 'S', "\u015E": 'S', "\u0160": 'S',
+    "\u015B": 's', "\u015D": 's', "\u015F": 's', "\u0161": 's',
+    "\u0162": 'T', "\u0164": 'T', "\u0166": 'T',
+    "\u0163": 't', "\u0165": 't', "\u0167": 't',
+    "\u0168": 'U', "\u016A": 'U', "\u016C": 'U', "\u016E": 'U', "\u0170": 'U', "\u0172": 'U',
+    "\u0169": 'u', "\u016B": 'u', "\u016D": 'u', "\u016F": 'u', "\u0171": 'u', "\u0173": 'u',
+    "\u0174": 'W', "\u0175": 'w',
+    "\u0176": 'Y', "\u0177": 'y', "\u0178": 'Y',
+    "\u0179": 'Z', "\u017B": 'Z', "\u017D": 'Z',
+    "\u017A": 'z', "\u017C": 'z', "\u017E": 'z',
+    "\u0132": 'IJ', "\u0133": 'ij',
+    "\u0152": 'Oe', "\u0153": 'oe',
+    "\u0149": "'n", "\u017F": 'ss'
   };
 
   /** Used to map characters to HTML entities. */
@@ -20118,6 +20118,10 @@ process.off = noop;
 process.removeListener = noop;
 process.removeAllListeners = noop;
 process.emit = noop;
+process.prependListener = noop;
+process.prependOnceListener = noop;
+
+process.listeners = function (name) { return [] }
 
 process.binding = function (name) {
     throw new Error('process.binding is not supported');
@@ -22290,7 +22294,7 @@ exports.default = BaseEndpoint;
 },{"../utils":80,"jsonschema":59}],73:[function(require,module,exports){
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -22354,14 +22358,14 @@ var Accounts = function (_BaseEndpoint) {
     _createClass(Accounts, [{
         key: "account",
         value: function account() {
-            var _account = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+            var _account = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'self';
 
             return this.client.get("/v1/accounts/" + _account + "/");
         }
     }, {
         key: "subscriptions",
         value: function subscriptions() {
-            var account = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+            var account = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'self';
 
             return this.client.get("/v1/accounts/" + account + "/subscriptions/");
         }
@@ -22375,7 +22379,7 @@ exports.default = Accounts;
 },{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76,"jsonschema":59}],74:[function(require,module,exports){
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -22551,7 +22555,7 @@ exports.default = Events;
 },{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76}],75:[function(require,module,exports){
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -22661,7 +22665,7 @@ Object.defineProperty(exports, "__esModule", {
 // Must use require (using import breaks brfs)
 
 
-var EventSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Event Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"like\": {\n      \"type\": \"string\"\n    },\n    \"label\": {\n      \"type\": \"array\"\n    },\n    \"label.op\": {\n      \"items\": {\n        \"enum\": [\n          \"all\",\n          \"any\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"within\": {\n      \"type\": \"string\",\n      \"pattern\": \"(\\\\d+(mm|cm|m|km|in|yd|ft|mi|nmi))@([\\\\-\\\\+]?\\\\d+(\\\\.\\\\d+)?),([\\\\-\\\\+]?\\\\d+(\\\\.\\\\d+)?)\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"start.tz\": {\n      \"type\": \"string\"\n    },\n    \"start.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.tz\": {\n      \"type\": \"string\"\n    },\n    \"end.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.tz\": {\n      \"type\": \"string\"\n    },\n    \"active.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"place.scope\": {\n      \"type\": \"array\"\n    },\n    \"place.exact\": {\n      \"type\": \"array\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 10,\n      \"maximum\": 200\n    },\n    \"top_events.limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 10\n    },\n    \"offset\": {\n      \"type\": \"integer\",\n      \"minimum\": 10\n    },\n    \"rank_level\": {\n      \"items\": {\n        \"enum\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"updated\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"relevance\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-updated\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\",\n          \"-relevance\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"top_events.sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"category\": {\n      \"items\": {\n        \"enum\": [\n          \"school-holidays\",\n          \"public-holidays\",\n          \"observances\",\n          \"concerts\",\n          \"conferences\",\n          \"expos\",\n          \"festivals\",\n          \"performing-arts\",\n          \"sports\",\n          \"daylight-savings\",\n          \"airport-delays\",\n          \"severe-weather\",\n          \"disasters\",\n          \"community\",\n          \"terror\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
+var EventSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Event Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"string\"\n    },\n    \"like\": {\n      \"type\": \"string\"\n    },\n    \"label\": {\n      \"type\": \"array\"\n    },\n    \"label.op\": {\n      \"items\": {\n        \"enum\": [\n          \"all\",\n          \"any\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"within\": {\n      \"type\": \"string\",\n      \"pattern\": \"(\\\\d+(mm|cm|m|km|in|yd|ft|mi|nmi))@([\\\\-\\\\+]?\\\\d+(\\\\.\\\\d+)?),([\\\\-\\\\+]?\\\\d+(\\\\.\\\\d+)?)\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"start.tz\": {\n      \"type\": \"string\"\n    },\n    \"start.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"start.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.tz\": {\n      \"type\": \"string\"\n    },\n    \"end.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"end.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.tz\": {\n      \"type\": \"string\"\n    },\n    \"active.gt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.gte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lt\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"active.lte\": {\n      \"type\": \"string\",\n      \"pattern\": \"^([0-9]{4})-[0-9]{2}-[0-9]{2}$\"\n    },\n    \"place.scope\": {\n      \"type\": \"array\"\n    },\n    \"place.exact\": {\n      \"type\": \"array\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 1\n    },\n    \"top_events.limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 10\n    },\n    \"offset\": {\n      \"type\": \"integer\",\n      \"minimum\": 0\n    },\n    \"rank_level\": {\n      \"items\": {\n        \"enum\": [\n          1,\n          2,\n          3,\n          4,\n          5\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"updated\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"relevance\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-updated\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\",\n          \"-relevance\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"top_events.sort\": {\n      \"items\": {\n        \"enum\": [\n          \"id\",\n          \"title\",\n          \"start\",\n          \"end\",\n          \"rank\",\n          \"category\",\n          \"duration\",\n          \"country\",\n          \"labels\",\n          \"-id\",\n          \"-title\",\n          \"-start\",\n          \"-end\",\n          \"-rank\",\n          \"-category\",\n          \"-duration\",\n          \"-country\",\n          \"-labels\"\n        ]\n      },\n      \"type\": \"array\"\n    },\n    \"category\": {\n      \"items\": {\n        \"enum\": [\n          \"school-holidays\",\n          \"public-holidays\",\n          \"observances\",\n          \"concerts\",\n          \"conferences\",\n          \"expos\",\n          \"festivals\",\n          \"performing-arts\",\n          \"sports\",\n          \"daylight-savings\",\n          \"airport-delays\",\n          \"severe-weather\",\n          \"disasters\",\n          \"community\",\n          \"terror\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
 
 var PlaceSchema = JSON.parse("{\n  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\n  \"title\": \"Place Search Schema\",\n  \"type\": \"object\",\n  \"additionalProperties\": false,\n  \"properties\": {\n    \"q\": {\n      \"type\": \"string\"\n    },\n    \"id\": {\n      \"type\": \"array\"\n    },\n    \"country\": {\n      \"type\": \"array\"\n    },\n    \"limit\": {\n      \"type\": \"integer\",\n      \"minimum\": 1,\n      \"maximum\": 200\n    },\n    \"type\": {\n      \"items\": {\n        \"enum\": [\n          \"neighbourhood\",\n          \"locality\",\n          \"localadmin\",\n          \"county\",\n          \"region\",\n          \"country\",\n          \"continent\",\n          \"country\",\n          \"planet\",\n          \"local\",\n          \"metro\",\n          \"major\"\n        ]\n      },\n      \"type\": \"array\"\n    }\n  },\n  \"required\": [\n\n  ]\n}");
 
@@ -22671,7 +22675,7 @@ exports.PlaceSchema = PlaceSchema;
 },{}],77:[function(require,module,exports){
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -22768,7 +22772,7 @@ exports.default = Searches;
 },{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76}],78:[function(require,module,exports){
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -22844,14 +22848,14 @@ var Users = function (_BaseEndpoint) {
     _createClass(Users, [{
         key: "user",
         value: function user() {
-            var _user = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+            var _user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'self';
 
             return this.get('v1', "/users/" + _user + "/");
         }
     }, {
         key: "memberships",
         value: function memberships() {
-            var user = arguments.length <= 0 || arguments[0] === undefined ? 'self' : arguments[0];
+            var user = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'self';
 
             return this.get('v1', "/users/" + user + "/memberships/", MembershipResultSet);
         }
@@ -22865,7 +22869,7 @@ exports.default = Users;
 },{"../../resultset":79,"../../utils":80,"../base":72,"./schemas":76,"jsonschema":59}],79:[function(require,module,exports){
 "use strict";
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj; };
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 Object.defineProperty(exports, "__esModule", {
     value: true
