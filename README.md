@@ -1,3 +1,16 @@
+## Internal Fork/Version
+
+Please ensure updated from remote!
+
+## Current Features
+
+** /events/count-external/  (Count By External Id)
+
+
+---
+
+
+
 # PredictHQ API Client for Javascript
 
 [![Version](https://badge.fury.io/js/predicthq.svg)](http://badge.fury.io/js/predicthq)
