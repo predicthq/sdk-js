@@ -65,4 +65,21 @@ describe('Places', () => {
 
     })
 
+    it('Search by Location', (done) => {
+
+    let c = new Client({ access_token : test_user_password_access_token})
+
+    c.places.search({location : '@40.66677,-73.88236'})
+        .then((results)=>{
+
+            expect(results.toArray().length).toEqual(10)
+
+            expect(results.toArray()[0].country).toEqual("United States")
+
+            done()
+
+        }).catch(done)
+
+    })
+
 })

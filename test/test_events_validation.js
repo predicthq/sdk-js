@@ -50,6 +50,17 @@ describe('Event.Validation', () => {
         expect(validate({category: 'blah'}).valid).toNotExist()
     })
 
+    it('State - Valid', () => {
+        expect(validate({state: 'deleted'}).valid).toExist()
+        expect(validate({state: 'active,deleted'}).valid).toExist()
+        expect(validate({state: ['active','deleted']}).valid).toExist()
+    })
+
+    it('State - Invalid', () => {
+        expect(validate({state: 'blah'}).valid).toNotExist()
+        expect(validate({state: ['blah']}).valid).toNotExist()
+    })
+
     it('Limit - Valid', () => {
         expect(validate({limit: 100}).valid).toExist()
         expect(validate({limit: '100'}).valid).toExist()
@@ -86,6 +97,18 @@ describe('Event.Validation', () => {
 
     it('Start - Invalid', () => {
         expect(validate({'start.gt': '2016'}).valid).toNotExist()
+    })
+
+    it('Updated - Valid', () => {
+        expect(validate({'updated.tz': 'America/New_York'}).valid).toExist()
+        expect(validate({'updated.gt': '2016-01-01'}).valid).toExist()
+        expect(validate({'updated.gte': '2016-01-01'}).valid).toExist()
+        expect(validate({'updated.lt': '2016-01-01'}).valid).toExist()
+        expect(validate({'updated.lte': '2016-01-01'}).valid).toExist()
+    })
+
+    it('Updated - Invalid', () => {
+        expect(validate({'updated.gt': '2016'}).valid).toNotExist()
     })
 
     it('End - Valid', () => {
