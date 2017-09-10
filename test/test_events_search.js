@@ -117,6 +117,31 @@ describe('Events', () => {
 
     }),
 
+    it('Search - Delta (updated and state filter)', (done) => {
+
+            let c = new Client({access_token: test_client_credentials_access_token})
+
+            c.events.search({
+                'updated.gte': '2017-05-01',
+                'updated.lte': '2017-05-02',
+                'label': ['performing-arts'],
+                'country': 'US',
+                'sort': ['start'],
+                'state': ['deleted']
+            })
+                .then((results)=> {
+
+                    // Expect some results
+                    expect(results.toArray().length).toEqual(10)
+
+                    expect(results.toArray()[0]['id']).toEqual('O8aaM8kalk56')
+
+                    done()
+
+                }).catch(done)
+
+    }),
+
     it('Search - count only', (done) => {
 
         let c = new Client({access_token: test_client_credentials_access_token})

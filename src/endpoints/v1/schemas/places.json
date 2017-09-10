@@ -18,6 +18,10 @@
       "minimum": 1,
       "maximum": 200
     },
+    "location": {
+      "type": "string",
+      "pattern": "@([\\-\\+]?\\d+(\\.\\d+)?),([\\-\\+]?\\d+(\\.\\d+)?)"
+    },
     "type": {
       "items": {
         "enum": [
