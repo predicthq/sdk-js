@@ -134,7 +134,7 @@ describe('Events', () => {
                     // Expect some results
                     expect(results.toArray().length).toEqual(10)
 
-                    expect(results.toArray()[0]['id']).toEqual('O8aaM8kalk56')
+                    expect(results.toArray()[0]['id']).toEqual('lzeBnBa6PNrv')
 
                     done()
 
