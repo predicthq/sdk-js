@@ -46,10 +46,6 @@ describe('Event.Validation', () => {
         expect(validate({category: ['conferences', 'concerts']}).valid).toExist()
     })
 
-    it('Category - Invalid', () => {
-        expect(validate({category: 'blah'}).valid).toNotExist()
-    })
-
     it('State - Valid', () => {
         expect(validate({state: 'deleted'}).valid).toExist()
         expect(validate({state: 'active,deleted'}).valid).toExist()
@@ -124,5 +120,3 @@ describe('Event.Validation', () => {
     })
 
 })
-
-
