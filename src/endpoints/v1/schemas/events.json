@@ -230,25 +230,6 @@
       "type": "array"
     },
     "category": {
-      "items": {
-        "enum": [
-          "school-holidays",
-          "public-holidays",
-          "observances",
-          "concerts",
-          "conferences",
-          "expos",
-          "festivals",
-          "performing-arts",
-          "sports",
-          "daylight-savings",
-          "airport-delays",
-          "severe-weather",
-          "disasters",
-          "community",
-          "terror"
-        ]
-      },
       "type": "array"
     }
   },
