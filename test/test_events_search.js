@@ -82,10 +82,10 @@ describe('Events', () => {
                 expect(results.toArray().length).toEqual(2)
 
                 // Green Bay Packers vs Seattle Seahawks - NFL (11th Dec)
-                expect(results.toArray()[0]['id']).toEqual('3zKXK58r1JDg')
+                expect(results.toArray()[0]['id']).toEqual('HyWiCstzPezY83Tvt8')
 
                 // Chicago Bears vs Green Bay Packers - NFL (18th Dec)
-                expect(results.toArray()[1]['id']).toEqual('2Ewb0z08VB0j')
+                expect(results.toArray()[1]['id']).toEqual('ZLFqzNXgmfKW477iE2')
 
                 done()
 
@@ -224,5 +224,3 @@ describe('Events', () => {
     })
 
 })
-
-
