@@ -1,6 +1,6 @@
 {
   "name": "predicthq",
-  "version": "0.0.16",
+  "version": "0.0.17",
   "description": "PredictHQ Event Intelligence",
   "main": "dist/predicthq.js",
   "scripts": {
