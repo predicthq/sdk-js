@@ -144,10 +144,58 @@
       "type": "string",
       "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
     },
+    "start_around.origin": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "start_around.offset": {
+      "type": "string",
+      "pattern": "^([0-9]+)d$"
+    },
+    "start_around.scale": {
+      "type": "string",
+      "pattern": "^([0-9]+)d$"
+    },
+    "start_around.decay": {
+      "type": "number"
+    },
+    "end_around.origin": {
+      "type": "string",
+      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
+    },
+    "end_around.offset": {
+      "type": "string",
+      "pattern": "^([0-9]+)d$"
+    },
+    "end_around.scale": {
+      "type": "string",
+      "pattern": "^([0-9]+)d$"
+    },
+    "end_around.decay": {
+      "type": "number"
+    },
+    "location_around.origin": {
+      "type": "string",
+      "pattern": "^(-?\\d+(\\.\\d+)?),(-?\\d+(\\.\\d+)?)$"
+    },
+    "location_around.offset": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)?(cm|m|km|in|ft|mi)$"
+    },
+    "location_around.scale": {
+      "type": "string",
+      "pattern": "^\\d+(\\.\\d+)?(cm|m|km|in|ft|mi)$"
+    },
+    "location_around.decay": {
+      "type": "number"
+    },
     "place.scope": {
       "type": "array"
     },
     "place.exact": {
+      "type": "array"
+    },
+    "relevance": {
       "type": "array"
     },
     "limit": {
@@ -175,6 +223,18 @@
       },
       "type": "array"
     },
+    "local_rank_level": {
+      "items": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "type": "array"
+    },
     "sort": {
       "items": {
         "enum": [
@@ -184,6 +244,7 @@
           "end",
           "updated",
           "rank",
+          "local_rank",
           "category",
           "duration",
           "country",
@@ -195,6 +256,7 @@
           "-end",
           "-updated",
           "-rank",
+          "-local_rank",
           "-category",
           "-duration",
           "-country",
@@ -212,6 +274,7 @@
           "start",
           "end",
           "rank",
+          "local_rank",
           "category",
           "duration",
           "country",
@@ -221,6 +284,7 @@
           "-start",
           "-end",
           "-rank",
+          "-local_rank",
           "-category",
           "-duration",
           "-country",

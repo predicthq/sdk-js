@@ -119,4 +119,37 @@ describe('Event.Validation', () => {
         expect(validate({'end.gt': '2016'}).valid).toNotExist()
     })
 
+    it('Start_around - Valid', () => {
+        expect(validate({'start_around.origin': '2020-01-01'}).valid).toExist()
+        expect(validate({'start_around.offset': '1d'}).valid).toExist()
+        expect(validate({'start_around.scale': '0d'}).valid).toExist()
+        expect(validate({'start_around.decay': 0}).valid).toExist()
+    })
+
+    it('Start_around - Invalid', () => {
+        expect(validate({'start_around': '2012-01-01'}).valid).toNotExist()
+    })
+
+    it('End_around - Valid', () => {
+        expect(validate({'end_around.origin': '2020-01-01'}).valid).toExist()
+        expect(validate({'end_around.offset': '1d'}).valid).toExist()
+        expect(validate({'end_around.scale': '0d'}).valid).toExist()
+        expect(validate({'end_around.decay': 0.5}).valid).toExist()
+    })
+
+    it('End_around - Invalid', () => {
+        expect(validate({'end_around': '2012-01-01'}).valid).toNotExist()
+    })
+
+    it('Location_around - Valid', () => {
+        expect(validate({'location_around.origin': '0.730610,-73.935242'}).valid).toExist()
+        expect(validate({'location_around.offset': '0km'}).valid).toExist()
+        expect(validate({'location_around.scale': '0.5km'}).valid).toExist()
+        expect(validate({'location_around.decay': 0.5}).valid).toExist()
+    })
+
+    it('Location_around - Invalid', () => {
+        expect(validate({'location_around': '0.730610,-73.935242'}).valid).toNotExist()
+    })
+
 })
