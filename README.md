@@ -3,6 +3,7 @@
 [![Version](https://badge.fury.io/js/predicthq.svg)](http://badge.fury.io/js/predicthq)
 [![Build Status](https://travis-ci.org/predicthq/sdk-js.svg?branch=master)](https://travis-ci.org/predicthq/sdk-js)
 [![Coverage Status](https://coveralls.io/repos/github/predicthq/sdk-js/badge.svg?branch=master)](https://coveralls.io/github/predicthq/sdk-js?branch=master)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpredicthq%2Fsdk-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpredicthq%2Fsdk-js?ref=badge_shield)
 
 [PredictHQ](https://www.predicthq.com/) is a global events intelligence platform that aggregates, enriches and connects scheduled and real-time event data happening both locally and globally, then predicts which ones could impact your business.
 
@@ -68,3 +69,7 @@ You will need to bring your own fetch library
 For a description of all available endpoints, refer to our [API Documentation](https://developer.predicthq.com/).
 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fpredicthq%2Fsdk-js.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fpredicthq%2Fsdk-js?ref=badge_large)
