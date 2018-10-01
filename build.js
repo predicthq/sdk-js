@@ -8,7 +8,7 @@ var UglifyJS = require("uglify-js")
 var chalk = require('chalk')
 var filesize = require("filesize")
 var fs = require("fs")
-
+var package = require('./package')
 var _ = require('lodash')
 
 var browserify = require('browserify')
@@ -23,7 +23,8 @@ b.transform('babelify')
 b.transform('brfs')
 
 b.transform(envify({
-        ENDPOINT_URL: 'https://api.predicthq.com'
+        ENDPOINT_URL: 'https://api.predicthq.com',
+        VERSION: package.version
 }))
 
 console.info(chalk.green('\tBuild process started..\n'))
