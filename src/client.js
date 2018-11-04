@@ -26,6 +26,7 @@ class Client {
         options = options || {}
 
         this.baseUrl = options.endpoint || process.env.ENDPOINT_URL
+        this.version = process.env.VERSION
 
         if (typeof(this.baseUrl) == 'undefined')
             throw "No endpoint URL set"
@@ -71,7 +72,8 @@ class Client {
                 method: method,
                 headers: {
                     'Authorization': 'Bearer ' + access_token,
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    'X-User-Agent': `PHQ-JS-SDK/${this.version}`
                 }
             }).then(function(response) {
                     return response.json()
