@@ -1,7 +1,3 @@
-/*
-
-*/
-
 import {_} from "../../utils"
 
 import {ResultSet} from "../../resultset"
@@ -17,10 +13,6 @@ class Accounts extends BaseEndpoint {
 
     account(account = 'self'){
         return this.client.get(`/v1/accounts/${account}/`)
-    }
-
-    subscriptions(account = 'self'){
-        return this.client.get(`/v1/accounts/${account}/subscriptions/`)
     }
 
 }
