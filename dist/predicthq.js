@@ -22144,6 +22144,7 @@ var Client = function () {
     _createClass(Client, [{
         key: "request",
         value: function request(method, path, returnClass, options) {
+            var _this = this;
 
             var access_token = this.options.access_token;
 
@@ -22162,7 +22163,7 @@ var Client = function () {
                     headers: {
                         'Authorization': 'Bearer ' + access_token,
                         'Accept': 'application/json',
-                        'x-user-agent': "PHQ-JS-SDK/" + version
+                        'X-User-Agent': "PHQ-JS-SDK/" + _this.version
                     }
                 }).then(function (response) {
                     return response.json();
@@ -22344,9 +22345,7 @@ function _inherits(subClass, superClass) {
     if (typeof superClass !== "function" && superClass !== null) {
         throw new TypeError("Super expression must either be null or a function, not " + (typeof superClass === "undefined" ? "undefined" : _typeof(superClass)));
     }subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } });if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-} /*
-  
-  */
+}
 
 var Accounts = function (_BaseEndpoint) {
     _inherits(Accounts, _BaseEndpoint);
@@ -22363,13 +22362,6 @@ var Accounts = function (_BaseEndpoint) {
             var _account = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'self';
 
             return this.client.get("/v1/accounts/" + _account + "/");
-        }
-    }, {
-        key: "subscriptions",
-        value: function subscriptions() {
-            var account = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'self';
-
-            return this.client.get("/v1/accounts/" + account + "/subscriptions/");
         }
     }]);
 
