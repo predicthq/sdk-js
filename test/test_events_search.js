@@ -149,7 +149,7 @@ describe('Events', () => {
         c.events.count({'rank_level': [5], 'category': 'sports'})
             .then((results)=> {
 
-                expect(_.keys(results.toDict())).toEqual([ 'count', 'top_rank', 'top_local_rank', 'rank_levels', 'local_rank_levels', 'categories', 'labels' ])
+                expect(_.keys(results.toDict())).toEqual([ 'count', 'top_rank', 'top_local_rank', 'top_aviation_rank', 'rank_levels', 'local_rank_levels', 'aviation_rank_levels', 'categories', 'labels' ])
 
                 expect(results.toDict()['count']).toBeGreaterThan(10000)
 
