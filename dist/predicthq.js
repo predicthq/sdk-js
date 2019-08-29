@@ -22116,7 +22116,7 @@ var Client = function () {
         options = options || {};
 
         this.baseUrl = options.endpoint || "https://api.predicthq.com";
-        this.version = "0.0.20";
+        this.version = "0.1.0";
 
         if (typeof this.baseUrl == 'undefined') throw "No endpoint URL set";
 
