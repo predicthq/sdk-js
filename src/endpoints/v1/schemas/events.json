@@ -235,6 +235,18 @@
       },
       "type": "array"
     },
+    "aviation_rank_level": {
+      "items": {
+        "enum": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ]
+      },
+      "type": "array"
+    },
     "sort": {
       "items": {
         "enum": [
@@ -245,6 +257,7 @@
           "updated",
           "rank",
           "local_rank",
+          "aviation_rank",
           "category",
           "duration",
           "country",
@@ -257,6 +270,7 @@
           "-updated",
           "-rank",
           "-local_rank",
+          "-aviation_rank",
           "-category",
           "-duration",
           "-country",
@@ -275,6 +289,7 @@
           "end",
           "rank",
           "local_rank",
+          "aviation_rank",
           "category",
           "duration",
           "country",
@@ -285,6 +300,7 @@
           "-end",
           "-rank",
           "-local_rank",
+          "-aviation_rank",
           "-category",
           "-duration",
           "-country",
