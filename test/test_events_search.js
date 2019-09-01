@@ -181,7 +181,7 @@ describe('Events', () => {
 
         let options = {
             'active.gte': '2016-01-01',
-            'active.lte': '2016-01-03',
+            'active.lte': '2016-01-02',
             'country': 'CA',
             'top_events.limit': 1,
             'top_events.sort': ['rank']
@@ -191,7 +191,7 @@ describe('Events', () => {
             .then((results)=> {
 
                 let days = _.keyBy(results.toArray(), 'date')
-                expect(_.keys(days)).toEqual(['2016-01-01', '2016-01-02', '2016-01-03'])
+                expect(_.keys(days)).toEqual(['2016-01-01', '2016-01-02'])
 
                 done()
 
