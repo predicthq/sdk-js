@@ -75,11 +75,6 @@ class Events extends BaseEndpoint {
         })
 
     }
-
-    for_account(id){
-        return new Events(this.client, id)
-    }
-
 }
 
 export default Events
