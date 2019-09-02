@@ -1,9 +1,7 @@
 import {_, logger} from "./utils"
 
 import Events from "./endpoints/v1/events"
-import Searches from "./endpoints/v1/searches"
 import Places from "./endpoints/v1/places"
-import Users from "./endpoints/v1/users"
 import Accounts from "./endpoints/v1/accounts"
 
 import {polyfill} from 'es6-promise'
@@ -34,9 +32,7 @@ class Client {
         this.options = options
 
         this.events = new Events(this)
-        this.searches = new Searches(this)
         this.places = new Places(this)
-        this.users = new Users(this)
         this.accounts = new Accounts(this)
 
         this.fetch = options.fetch || false
