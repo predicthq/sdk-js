@@ -15,20 +15,22 @@
 
 ### Initialising the SDK
 
-    const phq = require('predicthq');
-    
-    // Initialises PredictHQ client library using your access token
-    // Note: You can find/create your access token at https://control.predicthq.com/clients
-    const client = new phq.Client({access_token: 'ACCESS_TOKEN'});
-    
+```javascript
+const phq = require('predicthq');
+
+// Initialises PredictHQ client library using your access token
+// Note: You can find/create your access token at https://control.predicthq.com/clients
+const client = new phq.Client({access_token: 'ACCESS_TOKEN'});
+```
 
 #### ES6 Usage
 
-    import Client from 'predicthq';
-    // Initialises PredictHQ client library using your access token
-    // Note: You can find/create your access tnoken at https://control.predicthq.com/clients
-    const client = new Client({access_token: 'ACCESS_TOKEN'});
-    
+```javascript
+import Client from 'predicthq';
+// Initialises PredictHQ client library using your access token
+// Note: You can find/create your access tnoken at https://control.predicthq.com/clients
+const client = new Client({access_token: 'ACCESS_TOKEN'});
+```
 
 #### NodeJS
 
@@ -46,29 +48,31 @@ const client = new phq.Client({access_token: 'ACCESS_TOKEN', fetch: nodeFetch});
 ```
 ### Events endpoint
 
-Additional examples are available in [usecases/events directory](usecases/events)
+Additional examples are available in [usecases/events](usecases/events) directory.
 
-    // Basic event search without any parameters. By default, it will return the first ten events.
-    client.events.search()
-        .then(
-            (results) => {
-                for (const event of results) {
-                    console.info(event);
-                }
+```javascript
+// Basic event search without any parameters. By default, it will return the first ten events.
+client.events.search()
+    .then(
+        (results) => {
+            for (const event of results) {
+                console.info(event);
             }
-        ).catch(
-            err => console.error(err)
-        );
+        }
+    ).catch(
+        err => console.error(err)
+    );
 
 
-    // the search() method returns an EventResultSet which allows you to iterate over the 1st page of items
-    client.events.search({q: 'Madonna', rank_level: 5, country:'AU', 'start.gte' : '2016-01-01'})
-        .then(function(results){
-            var events = results.toArray()
-            for(var i=0; i < events.length; i++){
-               console.info(events[i].rank, events[i].category, events[i].title, events[i].start, events[i].location)
-            }
-        })
+// the search() method returns an EventResultSet which allows you to iterate over the 1st page of items
+client.events.search({q: 'Madonna', rank_level: 5, country:'AU', 'start.gte' : '2016-01-01'})
+    .then(function(results){
+        var events = results.toArray()
+        for(var i=0; i < events.length; i++){
+           console.info(events[i].rank, events[i].category, events[i].title, events[i].start, events[i].location)
+        }
+    })
+```
 
     88 'concerts' 'Madonna' '2016-03-27T10:00:00Z' [ 153.073, -27.3431 ]
     88 'concerts' 'Madonna' '2016-03-26T10:00:00Z' [ 153.073, -27.3431 ]
