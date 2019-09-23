@@ -33,16 +33,17 @@
 #### NodeJS
 
 You will need to bring your own fetch library
-    
-    //  npm install node-fetch
-    const nodeFetch = require('node-fetch');
-    
-    const phq = require('predicthq');
-    
-    // Initialises PredictHQ client library using your access token
-    // Note: You can find/create your access token at https://control.predicthq.com/clients
-    const client = new phq.Client({access_token: 'ACCESS_TOKEN', fetch: nodeFetch});
-    
+
+```javascript
+//  npm install node-fetch
+const nodeFetch = require('node-fetch');
+
+const phq = require('predicthq');
+
+// Initialises PredictHQ client library using your access token
+// Note: You can find/create your access token at https://control.predicthq.com/clients
+const client = new phq.Client({access_token: 'ACCESS_TOKEN', fetch: nodeFetch});
+```
 ### Events endpoint
 
 Additional examples are available in [usecases/events directory](usecases/events)
