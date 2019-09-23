@@ -13,9 +13,52 @@
 
 ## Usage
 
-    var phq = require('predicthq')
+### Initialising the SDK
 
-    client = new phq.Client({access_token: "ACCESS_TOKEN"})
+    const phq = require('predicthq');
+    
+    // Initialises PredictHQ client library using your access token
+    // Note: You can find/create your access token at https://control.predicthq.com/clients
+    const client = new phq.Client({access_token: 'ACCESS_TOKEN'});
+    
+
+#### ES6 Usage
+
+    import Client from 'predicthq';
+    // Initialises PredictHQ client library using your access token
+    // Note: You can find/create your access tnoken at https://control.predicthq.com/clients
+    const client = new Client({access_token: 'ACCESS_TOKEN'});
+    
+
+#### NodeJS
+
+You will need to bring your own fetch library
+    
+    //  npm install node-fetch
+    const nodeFetch = require('node-fetch');
+    
+    const phq = require('predicthq');
+    
+    // Initialises PredictHQ client library using your access token
+    // Note: You can find/create your access token at https://control.predicthq.com/clients
+    const client = new phq.Client({access_token: 'ACCESS_TOKEN', fetch: nodeFetch});
+    
+### Events endpoint
+
+Additional examples are available in [usecases/events directory](usecases/events)
+
+    // Basic event search without any parameters. By default, it will return the first ten events.
+    client.events.search()
+        .then(
+            (results) => {
+                for (const event of results) {
+                    console.info(event);
+                }
+            }
+        ).catch(
+            err => console.error(err)
+        );
+
 
     // the search() method returns an EventResultSet which allows you to iterate over the 1st page of items
     client.events.search({q: 'Madonna', rank_level: 5, country:'AU', 'start.gte' : '2016-01-01'})
@@ -59,17 +102,29 @@
 ## NodeJS
 
 You will need to bring your own fetch library
-
-    // npm install node-fetch
-    global.fetch = require('node-fetch')
-    var phq = require('predicthq')
-    var client = new phq.Client({access_token: "ACCESS_TOKEN"})
-
-    // or
-    var fetch = require('node-fetch')
-    var phq = require('predicthq')
-    var client = new phq.Client({access_token: "ACCESS_TOKEN", fetch: fetch})
-
+    //  npm install node-fetch
+    const nodeFetch = require('node-fetch');
+    
+    const phq = require('predicthq');
+    
+    // Initialises PredictHQ client library using your access token
+    // Note: You can find/create your access token at https://control.predicthq.com/clients
+    const client = new phq.Client({access_token: "$token", fetch: nodeFetch});
+    
+    // Use the events endpoint
+    const phqEvents = client.events;
+    
+    // Basic event search without any parameters. By default, it will return the first ten events.
+    phqEvents.search()
+        .then(
+            (results) => {
+                for (const event of results) {
+                    console.info(event);
+                }
+            }
+        ).catch(
+            err => console.error(err)
+        );
 
 ## Endpoints
 
