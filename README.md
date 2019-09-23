@@ -62,16 +62,6 @@ client.events.search()
     ).catch(
         err => console.error(err)
     );
-
-
-// the search() method returns an EventResultSet which allows you to iterate over the 1st page of items
-client.events.search({q: 'Madonna', rank_level: 5, country:'AU', 'start.gte' : '2016-01-01'})
-    .then(function(results){
-        var events = results.toArray()
-        for(var i=0; i < events.length; i++){
-           console.info(events[i].rank, events[i].category, events[i].title, events[i].start, events[i].location)
-        }
-    })
 ```
 
     88 'concerts' 'Madonna' '2016-03-27T10:00:00Z' [ 153.073, -27.3431 ]

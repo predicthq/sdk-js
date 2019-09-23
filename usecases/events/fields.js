@@ -15,9 +15,18 @@ phqEvents.search()
     .then(
         results => {
             for (const event of results) {
-                console.info(event);
+
+                // List of event fields are available at https://developer.predicthq.com/resources/events/#fields
+                console.log(`Event title: ${event.title}`);
+                console.log(`Category: ${event.category}`);
+                console.log('Entities:');
+                (event.entities || []).forEach(ent => {
+                    console.log(`(${ent.type}) ${ent.name}`)
+                });
+                console.log();
+
             }
         }
     ).catch(
     err => console.error(err)
-    );
+);
