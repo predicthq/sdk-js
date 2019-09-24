@@ -1,3 +1,5 @@
+<img align="center" src="ext/logo.png" alt="PredictHQ logo">
+
 # PredictHQ API Client for Javascript
 
 [![Version](https://badge.fury.io/js/predicthq.svg)](http://badge.fury.io/js/predicthq)
@@ -12,6 +14,18 @@
     npm install predicthq
 
 ## Usage
+
+
+We support all the endpoints available in our API.
+
+* `oauth2`
+* `accounts`
+* `events`
+* `places`
+
+Please refer to our [API Documentation](https://developer.predicthq.com/) for a description of each endpoint.
+
+
 
 ### Initialising the SDK
 
