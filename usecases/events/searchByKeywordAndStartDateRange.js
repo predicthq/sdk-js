@@ -5,7 +5,7 @@ const phq = require('predicthq');
 
 // Initialises PredictHQ client library using your access token
 // Note: You can find/create your access token at https://control.predicthq.com/clients
-const client = new phq.Client({access_token: 'c6INmbmfD0SurslQ4afBur2z9RE5ts', fetch: nodeFetch});
+const client = new phq.Client({access_token: 'Acc3sS-t0keN', fetch: nodeFetch});
 
 // Use the events endpoint
 const phqEvents = client.events;
