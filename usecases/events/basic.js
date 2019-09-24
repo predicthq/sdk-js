@@ -10,14 +10,21 @@ const client = new phq.Client({access_token: 'c6INmbmfD0SurslQ4afBur2z9RE5ts', f
 // Use the events endpoint
 const phqEvents = client.events;
 
-// Basic event search without any parameters. By default, it will return the first ten events.
+// Basic event search without any parameters.
 phqEvents.search()
     .then(
         results => {
             for (const event of results) {
-                console.info(event);
+
+                // See https://developer.predicthq.com/resources/events/#fields for list of all event fields.
+                console.log(`Event title: ${event.title}`);
+                console.log(`Category: ${event.category}`);
+                console.log('Entities:');
+                (event.entities || []).forEach(ent => {
+                    console.log(`(${ent.type}) ${ent.name}`)
+                });
+                console.log();
+
             }
         }
-    ).catch(
-    err => console.error(err)
-    );
+        ).catch(err => console.error(err));

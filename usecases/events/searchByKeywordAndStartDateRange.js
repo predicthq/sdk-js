@@ -18,17 +18,9 @@ const logEventsToConsole = events => {
     }
 };
 
-// 10km range around the -36.844480,174.768368 geopoint
-const withinParam = '10km@-36.844480,174.768368';
 
-// Event search using `within` parameter.
+// Event search using keyword and start_date range parameters.
 // See https://developer.predicthq.com/resources/events/#parameters for all available search parameters.
-phqEvents.search({within: withinParam})
-    .then(logEventsToConsole)
-    .catch(err => console.error(err));
-
-// OR if you know the place ID - example below search for events within the New York state (ID: 5128638)
-// Sort by start date in descending order
-phqEvents.search({'place.scope': '5128638', 'sort': '-start'})
+phqEvents.search({q: 'Summer Fest', 'start.gte': '2019-07-01', 'start.lte': '2019-07-31'})
     .then(logEventsToConsole)
     .catch(err => console.error(err));
