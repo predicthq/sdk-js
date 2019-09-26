@@ -14,11 +14,9 @@ const phqEvents = client.events;
 phqEvents.search()
     .then(
         res => {
-            result = res.toDict()
-            console.log(`Total number of events: ${res.count}`)
-            console.log(`Number of events returned in this request: ${result.length}`)
-
-
+            result = res.toDict();
+            console.log(`Total number of events: ${res.count}`);
+            console.log(`Number of events returned in this request: ${result.length}`);
 
             for (const event of res.toArray()) {
 
