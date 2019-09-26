@@ -79,12 +79,3 @@ client.events.search()
     );
 ```
 
-
-## Endpoints
-
-* events
-* accounts
-* places
-
-
-For a description of all available endpoints, refer to our [API Documentation](https://developer.predicthq.com/).

@@ -13,8 +13,14 @@ const phqEvents = client.events;
 // Basic event search without any parameters.
 phqEvents.search()
     .then(
-        results => {
-            for (const event of results) {
+        res => {
+            result = res.toDict()
+            console.log(`Total number of events: ${res.count}`)
+            console.log(`Number of events returned in this request: ${result.length}`)
+
+
+
+            for (const event of res.toArray()) {
 
                 // See https://developer.predicthq.com/resources/events/#fields for list of all event fields.
                 console.log(`Event title: ${event.title}`);
