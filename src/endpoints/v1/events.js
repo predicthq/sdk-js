@@ -23,7 +23,7 @@ class Events extends BaseEndpoint {
 
         this.schema = EventSchema
         this.arrayOptions = ['category', 'sort', 'top_events.sort', 'rank_level', 'local_rank_level', 'aviation_rank_level', 'label', 'country','place.scope','place.exact', 'state', 'relevance']
-        this.integerOptions = ['limit', 'offset', 'rank_level', 'local_rank_level', 'aviation_rank_level', 'signal.significance']
+        this.integerOptions = ['limit', 'offset', 'rank_level', 'local_rank_level', 'aviation_rank_level']
 
         this.accountId = accountId
 

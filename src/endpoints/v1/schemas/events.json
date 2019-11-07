@@ -41,33 +41,6 @@
       },
       "type": "array"
     },
-    "signal.id": {
-      "type": "string"
-    },
-    "signal.analysis_from": {
-      "type": "string",
-      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
-    },
-    "signal.analysis_to": {
-      "type": "string",
-      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
-    },
-    "signal.analysis_tz": {
-      "type": "string"
-    },
-    "signal.significance": {
-      "type": "integer",
-      "minimum": 0,
-      "maximum": 100
-    },
-    "signal.metric": {
-      "type": "string",
-      "pattern": "^(demand|lead|span)$"
-    },
-    "signal.explain": {
-      "type": "string",
-      "pattern": "^([0-9]{4})-[0-9]{2}-[0-9]{2}$"
-    },
     "start.tz": {
       "type": "string"
     },
