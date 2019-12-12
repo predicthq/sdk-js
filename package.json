@@ -5,7 +5,7 @@
   "main": "dist/predicthq.js",
   "scripts": {
     "lint": "node node_modules/eslint/bin/eslint.js  ./src/",
-    "test": "VERSION=$npm_package_version NODE_ENV=test node_modules/mocha/bin/mocha --require babel-core/register test",
+    "test": "VERSION=$npm_package_version NODE_ENV=test node_modules/mocha/bin/mocha --timeout 5000 --require babel-core/register test",
     "test_browser": "VERSION=$npm_package_version ACCESS_TOKEN=$(node -r dotenv/config -e 'console.log(process.env.TEST_USER_PASSWORD_ACCESS_TOKEN)'); ACCOUNT_ID=$(node -r dotenv/config -e 'console.log(process.env.TEST_ACCOUNT_ID)'); ENDPOINT_URL=$(node -r dotenv/config -e 'console.log(process.env.ENDPOINT_URL)'); node_modules/mocha-phantomjs/bin/mocha-phantomjs --web-security no -b -R dot test/browser/runner.html?endpoint=${ENDPOINT_URL}\\&token=${ACCESS_TOKEN}\\&account_id=${ACCOUNT_ID}",
     "update": "node node_modules/npm-check-updates/bin/npm-check-updates --upgradeAll",
     "build": "NODE_ENV=production node node_modules/browserify/bin/cmd.js src/client.js -t babelify | node_modules/uglify-js/bin/uglifyjs -o dist/predicthq.js; node build.js",
@@ -66,7 +66,7 @@
     "lodash": "4.15.0",
     "lodash-cli": "4.15.0",
     "lodash-modularize": "1.3.3",
-    "mocha": "3.0.2",
+    "mocha": "5.2.0",
     "module-deps": "4.0.7",
     "mversion": "1.10.1",
     "nock": "8.0.0",

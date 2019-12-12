@@ -6,7 +6,5 @@ node_js:
   - "5"
   - "4.1"
   - "4.0"
-  - "0.12"
 
 script: "npm run lodash; npm run coverage_to_travis"
-
