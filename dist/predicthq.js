@@ -22673,7 +22673,7 @@ var _createClass = function () {
      
      */
 
-require("core-js/es6/symbol");
+require("core-js/es/symbol");
 
 function _possibleConstructorReturn(self, call) {
     if (!self) {
@@ -22744,7 +22744,7 @@ var ResultSet = function (_Result) {
 exports.Result = Result;
 exports.ResultSet = ResultSet;
 
-},{"core-js/es6/symbol":4}],78:[function(require,module,exports){
+},{"core-js/es/symbol":4}],78:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
